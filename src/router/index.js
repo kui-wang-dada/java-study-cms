@@ -76,16 +76,20 @@ files.keys().forEach(key => {
   modules.push(files(key).default)
 })
 
+console.log(modules,'cc')
+
 export const asyncRoutes = [
   ...modules,
   // 404 page must be placed at the end !!!
   { path: '*', redirect: '/404', hidden: true }
 ]
 
+console.log(constantRoutes.concat(asyncRoutes),'aa')
+
 const createRouter = () => new Router({
   // mode: 'history', // require service support
   scrollBehavior: () => ({ y: 0 }),
-  routes: constantRoutes
+  routes: constantRoutes.concat(asyncRoutes)
 })
 
 const router = createRouter()
