@@ -38,40 +38,56 @@
         <component :is="inline ? 'span' : 'el-col'" :span="btnCol">
           <el-form-item>
             <slot name="buttons" />
-            <el-button v-if="!!submitMsg" type="primary" @click="handleSubmit">{{ submitMsg }}</el-button>
-            <el-button v-if="resetMsg" type="info" @click="handleReset">{{ resetMsg }}</el-button>
-            <span v-if="showBack" class="el-button el-button--small" @click="goBack">返回</span>
+            <el-button
+              v-if="!!submitMsg"
+              type="primary"
+              @click="handleSubmit"
+              >{{ submitMsg }}</el-button
+            >
+            <el-button v-if="resetMsg" type="info" @click="handleReset">{{
+              resetMsg
+            }}</el-button>
+            <span
+              v-if="showBack"
+              class="el-button el-button--small"
+              @click="goBack"
+              >返回</span
+            >
           </el-form-item>
         </component>
-
       </el-row>
     </el-form>
   </div>
 </template>
 
 <script>
-import componentMap from './util'
-import SrmSelect from './SrmSelect'
-import SrmRadioGroup from './SrmRadioGroup'
-import SrmCheckboxGroup from './SrmCheckboxGroup'
-import SrmValueRegio from './SrmValueRegio'
-import SrmUpload from './SrmUpload'
-import { proxyProp } from '../../utils/proxyProp'
-import { findComponentUpwardByProp, findComponentsDownward } from '../../utils/findComponents'
-const form = Symbol('form') // 保证每个实例有独一无二的标志位
+import componentMap from "./util";
+import SrmSelect from "./SrmSelect";
+import SrmSwitch from "./SrmSwitch";
+import SrmRadioGroup from "./SrmRadioGroup";
+import SrmCheckboxGroup from "./SrmCheckboxGroup";
+import SrmValueRegio from "./SrmValueRegio";
+import SrmUpload from "./SrmUpload";
+import { proxyProp } from "../../utils/proxyProp";
+import {
+  findComponentUpwardByProp,
+  findComponentsDownward
+} from "../../utils/findComponents";
+const form = Symbol("form"); // 保证每个实例有独一无二的标志位
 // 如果子项含有树组件，请单独处理树组件的验证结果
 export default {
-  name: 'SrmForm',
+  name: "SrmForm",
   components: {
     SrmSelect,
+    SrmSwitch,
     SrmRadioGroup,
     SrmCheckboxGroup,
     SrmValueRegio,
     SrmUpload
   },
   model: {
-    prop: 'value',
-    event: 'change'
+    prop: "value",
+    event: "change"
   },
   props: {
     formItems: {
@@ -88,15 +104,15 @@ export default {
     },
     submitMsg: {
       type: [Boolean, String],
-      default: '提交'
+      default: "提交"
     },
     resetMsg: {
       type: [Boolean, String],
-      default: '重置'
+      default: "重置"
     },
     labelWitdh: {
       type: String,
-      default: 'auto'
+      default: "auto"
     },
     // 传入mergeForm允许父组件修改内部Model对象
     // mergeForm: {
@@ -105,7 +121,7 @@ export default {
     // },
     size: {
       type: String,
-      default: 'small'
+      default: "small"
     },
     showBack: {
       type: Boolean,
@@ -125,23 +141,22 @@ export default {
       Model: {},
       originModel: {},
       form
-    }
+    };
   },
   computed: {
     // 根据formItem计算出实际需要让页面渲染的真正的_formItem数据
     _formItems() {
       // this.Model中的值改变触发computed
-      let _formItems = []
+      let _formItems = [];
       _formItems = this.formItems.map(item => {
         // this.$emit(`update:merge-form`, this.Model)
-        this.$emit('change', this.Model)
-        return this.computeFormItem(item, this.Model)
-      }
-      )
-      return _formItems
+        this.$emit("change", this.Model);
+        return this.computeFormItem(item, this.Model);
+      });
+      return _formItems;
     },
     showMessage() {
-      return this.$attrs['show-message'] !== false
+      return this.$attrs["show-message"] !== false;
     }
   },
   watch: {
@@ -149,20 +164,16 @@ export default {
     formItems: {
       handler() {
         this.formItems.forEach(formItem => {
-          if (!formItem.attrs || !formItem.attrs.key) return // 跳过没有key的属性(插槽)
-          let value = formItem.attrs.value
-          if (formItem.tag === 'value-regio') {
-            value = value || {}
+          if (!formItem.attrs || !formItem.attrs.key) return; // 跳过没有key的属性(插槽)
+          let value = formItem.attrs.value;
+          if (formItem.tag === "value-regio") {
+            value = value || {};
           }
           if (value) {
-            this.$set(
-              this.Model,
-              formItem.attrs.key,
-              value
-            )
+            this.$set(this.Model, formItem.attrs.key, value);
           }
-        })
-        this.originModel = JSON.parse(JSON.stringify(this.Model))
+        });
+        this.originModel = JSON.parse(JSON.stringify(this.Model));
       },
       deep: true,
       immediate: true
@@ -177,34 +188,38 @@ export default {
   },
   mounted() {
     // 代理父组件的mergeForm属性
-    const parentComponent = findComponentUpwardByProp(this, [this.formName])
+    const parentComponent = findComponentUpwardByProp(this, [this.formName]);
     if (parentComponent) {
-      parentComponent[this.formName] = proxyProp(parentComponent[this.formName])
+      parentComponent[this.formName] = proxyProp(
+        parentComponent[this.formName]
+      );
     } else {
-      throw new Error('can not find parentComponent')
+      throw new Error("can not find parentComponent");
     }
     // mounted钩子中formItems是空数组,所以不在mounted里面操作formItems
   },
   methods: {
     computeFormItem(formItem, Model) {
-      const item = { ...formItem }
+      const item = { ...formItem };
       // 表单控件的类型
-      const tag = item.tag || 'input'
+      const tag = item.tag || "input";
       // 对应到组件映射表
-      const basicItem = componentMap[tag]
-      item.tag = basicItem.component
+      const basicItem = componentMap[tag];
+      item.tag = basicItem.component;
       // 继承基类的属性
-      item.attrs = Object.assign({}, basicItem.attrs, item.attrs)
+      item.attrs = Object.assign({}, basicItem.attrs, item.attrs);
       // 获取动态 Attributes
-      if (item.getAttrs) { item.attrs = Object.assign(item.attrs, item.getAttrs(Model)) }
+      if (item.getAttrs) {
+        item.attrs = Object.assign(item.attrs, item.getAttrs(Model));
+      }
       // 条件渲染
-      item._ifRender = item.ifRender ? item.ifRender(Model) : true
+      item._ifRender = item.ifRender ? item.ifRender(Model) : true;
       // 防止表单提交时存在多余 key
       if (!item._ifRender) {
-        delete Model[item.attrs.key]
+        delete Model[item.attrs.key];
       }
       // form-item 配置
-      return item
+      return item;
     },
     // mergeModel() {
     //   Object.assign(this.Model, this.mergeForm)
@@ -212,55 +227,57 @@ export default {
     // 提交按钮
     handleSubmit() {
       // 验证SrmValueRegio的值是否合法
-      const SrmValueRegios = findComponentsDownward(this, 'SrmValueRegio')
+      const SrmValueRegios = findComponentsDownward(this, "SrmValueRegio");
       const valueRegioValid = SrmValueRegios.every(SrmValueRegio => {
-        return SrmValueRegio.validate()
-      })
-      if (!valueRegioValid) return
+        return SrmValueRegio.validate();
+      });
+      if (!valueRegioValid) return;
       // 验证表单中的所有项目
       this.$refs[form].validate(async valid => {
         if (valid) {
           try {
-            this.$emit('submit')
+            this.$emit("submit");
           } catch (e) {
-            console.log(e)
+            console.log(e);
           }
         }
-      })
+      });
     },
     handleReset() {
-      const ElTrees = findComponentsDownward(this, 'ElTree')
+      const ElTrees = findComponentsDownward(this, "ElTree");
       if (ElTrees && ElTrees.length) {
         ElTrees.map(item => {
-          item.setCheckedKeys([])
-        })
+          item.setCheckedKeys([]);
+        });
       }
-      this.Model = JSON.parse(JSON.stringify(this.originModel))
-      this.$emit('change', this.Model)
-      this.$emit('after-reset')
+      this.Model = JSON.parse(JSON.stringify(this.originModel));
+      this.$emit("change", this.Model);
+      this.$emit("after-reset");
     },
     goBack() {
-      this.$confirm('确认返回上一页？', '返回', {
-        confirmButtonText: '确认',
-        cancelButtonText: '取消',
-        type: 'info'
-      }).then(() => {
-        this.$router.go(-1)
-        this.$store.dispatch('tagsView/delView', {
-          path: this.$route.path
-        })
-      }).catch(e => {
-        console.log(e)
+      this.$confirm("确认返回上一页？", "返回", {
+        confirmButtonText: "确认",
+        cancelButtonText: "取消",
+        type: "info"
       })
+        .then(() => {
+          this.$router.go(-1);
+          this.$store.dispatch("tagsView/delView", {
+            path: this.$route.path
+          });
+        })
+        .catch(e => {
+          console.log(e);
+        });
     }
   }
-}
+};
 </script>
 <style lang="scss">
-  .el-select,
-  .el-date-editor.el-input,
-  .el-date-editor.el-input__inner,
-  .el-cascader {
-    width: 100%;
-  }
+.el-select,
+.el-date-editor.el-input,
+.el-date-editor.el-input__inner,
+.el-cascader {
+  width: 100%;
+}
 </style>

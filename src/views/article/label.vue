@@ -9,7 +9,7 @@
       submit-msg="搜索"
       @submit="refresh"
       @after-reset="refresh"
-      class="container"
+      class="search"
     />
     <srm-table
       :source-data="tableData"
@@ -17,6 +17,7 @@
       :total="total"
       :page-request="listQuery"
       :loading="listLoading"
+      :exportVisible="false"
       :page-sizes="[10, 25, 50]"
       @handleBatchDelete="setItem($event, 'delete')"
       @changePage="changePage"
@@ -36,9 +37,6 @@
           </el-button>
           <el-button type="text" @click="setItem(scope.row, 'edit')">
             编辑
-          </el-button>
-          <el-button type="text" @click="setItem(scope.row, 'detail')">
-            查看
           </el-button>
         </template>
       </el-table-column>
@@ -62,33 +60,13 @@ export default {
       fetchList,
       deleteVisible: false,
       columns: [
-        { type: "index", label: "序号", width: 50 },
-        {
-          prop: "title",
-          label: "标题",
-          "show-overflow-tooltip": true,
-          width: 300
-        },
-        { prop: "image_uri", label: "封面", isImg: true, width: 120 },
-        {
-          prop: "image_uri",
-          label: "链接",
-          width: 300,
-          isLink: true
-        },
-        {
-          prop: "status",
-          label: "当前状态",
-          isTag: true,
-          width: 100
-        },
+        { type: "index", label: "序号", width: 100 },
         {
           prop: "label",
-          label: "标签",
-          isLabel: true,
-          width: 200
+          label: "标签名称",
+          isLabel: true
         },
-        { prop: "display_time", label: "发布时间" },
+        { prop: "display_time", label: "创建时间" },
         // 没有prop的列不会被导出
         { slot: "operation", label: "操作" }
       ],
@@ -96,21 +74,11 @@ export default {
         {
           tag: "input",
           itemAttrs: {
-            label: "文章标题"
+            label: "搜索"
           },
           attrs: {
             key: "title",
-            placeholder: "请输入文章标题"
-          }
-        },
-        {
-          tag: "select",
-          itemAttrs: {
-            label: "文章状态"
-          },
-          attrs: {
-            key: "status",
-            options: statusMap
+            placeholder: "请输入标签名称关键字搜索"
           }
         }
       ]
@@ -137,7 +105,7 @@ export default {
           this.$router.push(`/article/edit/${item.id}`);
           break;
         case "create":
-          this.$router.push("/article/create");
+          this.$router.push("/article/labelEdit");
           break;
         default:
           break;
@@ -156,7 +124,7 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-.container {
+.search {
   padding: 0 30px;
 }
 </style>

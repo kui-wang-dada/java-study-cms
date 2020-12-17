@@ -1,5 +1,11 @@
 <template>
-  <el-select v-bind="$attrs" :value="value" v-on="$listeners">
+  <el-select
+    v-bind="$attrs"
+    :value="value"
+    v-on="$listeners"
+    :multiple="$attrs.multiple"
+    filterable
+  >
     <el-option
       v-for="item in $attrs.options"
       :key="item.value"
@@ -10,12 +16,12 @@
 </template>
 <script>
 export default {
-  name: 'SrmSelect',
+  name: "SrmSelect",
   props: {
     value: {
-      type: [String, Number],
-      default: ''
+      type: [Number, String, Array],
+      default: ""
     }
   }
-}
+};
 </script>

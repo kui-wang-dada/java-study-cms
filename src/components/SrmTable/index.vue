@@ -11,7 +11,8 @@
         icon="el-icon-download"
         @click="handleDownload"
       >
-        <span>导出</span><span v-show="selections.length">{{ selections.length }}项</span>
+        <span>导出</span
+        ><span v-show="selections.length">{{ selections.length }}项</span>
       </el-button>
     </div>
     <el-table
@@ -33,17 +34,12 @@
           :label="column.label"
         >
           <template slot-scope="scope">
-            <Render
-              :row="scope.row"
-              :index="index"
-              :render="column.render"
-            />
+            <Render :row="scope.row" :index="index" :render="column.render" />
           </template>
         </el-table-column>
-        <slot
-          v-else-if="column.slot"
-          :name="column.slot"
-        />
+        <slot v-else-if="column.slot" :name="column.slot" />
+
+        <!-- 图片 -->
         <el-table-column
           v-else-if="column.isImg"
           :key="column.prop"
@@ -52,23 +48,68 @@
           <template slot-scope="scope">
             <el-image
               class="srm-table_img"
-              :style="{width: column.width || '120px', height: column.height || 'auto'}"
+              :style="{
+                width: column.width || '120px',
+                height: column.height || 'auto'
+              }"
               :src="scope.row[column.prop]"
               :preview-src-list="[scope.row[column.prop]]"
             />
           </template>
         </el-table-column>
+
+        <!-- link标签 -->
         <el-table-column
-          v-else
+          v-else-if="column.isLink"
           :key="column.prop"
           v-bind="setAttrs(column)"
-        />
+        >
+          <template slot-scope="scope">
+            <el-link
+              :href="scope.row[column.prop]"
+              type="primary"
+              target="_blank"
+            >
+              {{ scope.row[column.prop] }}
+            </el-link>
+          </template>
+        </el-table-column>
+
+        <!-- tag -->
+        <el-table-column
+          v-else-if="column.isTag"
+          :key="column.prop"
+          v-bind="setAttrs(column)"
+        >
+          <template slot-scope="scope">
+            <el-tag :type="scope.row[column.prop] | statusTag">
+              {{ scope.row[column.prop] | statusName }}
+            </el-tag>
+          </template>
+        </el-table-column>
+
+        <!-- 标签 -->
+        <el-table-column
+          v-else-if="column.isLabel"
+          :key="column.prop"
+          v-bind="setAttrs(column)"
+        >
+          <template slot-scope="scope">
+            <el-tag
+              v-for="tag in scope.row[column.prop]"
+              :key="tag"
+              class="label-tag"
+            >
+              {{ tag }}
+            </el-tag>
+          </template>
+        </el-table-column>
+
+        <el-table-column v-else :key="column.prop" v-bind="setAttrs(column)" />
       </template>
     </el-table>
     <!--分页栏-->
-    <div
-      class="toolbar"
-    >
+    <div class="toolbar">
       <div v-if="deleteVisible" class="handle-wrap">
         <el-button
           class="button"
@@ -78,7 +119,8 @@
           icon="el-icon-delete"
           @click="handleBatchDelete"
         >
-          <span>删除</span><span v-show="selections.length">{{ selections.length }}项</span>
+          <span>删除</span
+          ><span v-show="selections.length">{{ selections.length }}项</span>
         </el-button>
       </div>
       <el-pagination
@@ -97,11 +139,12 @@
   </div>
 </template>
 <script>
-import Render from './render'
-import { scrollTo } from '@/utils/scroll-to'
+import Render from "./render";
+import { statusMap } from "assets/data-maps";
+import { scrollTo } from "@/utils/scroll-to";
 
 export default {
-  name: 'SrmTable',
+  name: "SrmTable",
   components: {
     Render
     // ImagePreview
@@ -153,7 +196,7 @@ export default {
     // 导出文件默认名称
     exportName: {
       type: String,
-      default: ''
+      default: ""
     },
     // 每页条数选择器
     pageSizes: {
@@ -166,97 +209,114 @@ export default {
       downloadLoading: false,
       // 当前选择项的集合
       selections: []
+    };
+  },
+  filters: {
+    // tag类型
+    statusTag(status) {
+      return [null, "success", "success", "danger"][status];
+    },
+
+    // 文章状态
+    statusName(status) {
+      return statusMap.find(item => item.value === status).label;
     }
   },
   computed: {
     layout() {
-      const layout = ['total', 'prev', 'pager', 'next']
+      const layout = ["total", "prev", "pager", "next"];
       if (this.pageSizes.length) {
-        layout.push('sizes')
+        layout.push("sizes");
       }
-      return layout.join(', ')
+      return layout.join(", ");
     }
   },
   watch: {
     sourceData: function() {
-      scrollTo(0, 0)
+      scrollTo(0, 0);
     }
   },
   methods: {
     // 已选项
     selectionChange(selections) {
-      this.selections = selections
-      this.$emit('selectionChange', { selections })
+      this.selections = selections;
+      this.$emit("selectionChange", { selections });
     },
     // 批量删除
     handleBatchDelete() {
-      this.$emit('handleBatchDelete', this.selections)
+      this.$emit("handleBatchDelete", this.selections);
     },
     // 切换页面
     currentChange(page) {
-      this.$emit('changePage', page)
+      this.$emit("changePage", page);
     },
     sizeChange(size) {
-      this.$emit('changeSize', size)
+      this.$emit("changeSize", size);
     },
     setAttrs(params) {
       // eslint-disable-next-line
-      const { slot, ...options } = params
+      const { slot, ...options } = params;
       if (!options.align) {
-        options.align = 'center'
+        options.align = "center";
       }
-      return { ...options }
+      return { ...options };
     },
     handleDownload() {
-      this.downloadLoading = true
-      import('@/vendor/Export2Excel').then(excel => {
-        const filterColumn = this.columns.filter(v => v.prop)
-        const tHeader = []
-        const data = this.selections.map((item) => filterColumn.map(col => {
-          if (!col.prop) return
-          tHeader.push(col.label)
-          if (col.formatter) {
-            return col.formatter(item, '', item[col.prop])
-          }
-          return item[col.prop]
-        }))
+      this.downloadLoading = true;
+      import("@/vendor/Export2Excel").then(excel => {
+        const filterColumn = this.columns.filter(v => v.prop);
+        const tHeader = [];
+        const data = this.selections.map(item =>
+          filterColumn.map(col => {
+            if (!col.prop) return;
+            tHeader.push(col.label);
+            if (col.formatter) {
+              return col.formatter(item, "", item[col.prop]);
+            }
+            return item[col.prop];
+          })
+        );
         excel.export_json_to_excel({
           header: tHeader,
           data,
           filename: this.exportName || document.title
-        })
-        this.downloadLoading = false
-      })
+        });
+        this.downloadLoading = false;
+      });
     }
   }
-}
+};
 </script>
 <style lang="scss" scoped>
-.container{
+.container {
   padding: 0 15px;
 }
-.srm-table_img{
+.srm-table_img {
   cursor: pointer;
 }
-.toolbar{
+.toolbar {
   margin-top: 15px;
   padding: 0 15px;
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
-  .handle-wrap{
+  .handle-wrap {
     position: absolute;
     left: 0;
   }
 }
-.handle-wrap{
+.handle-wrap {
   display: flex;
   align-items: center;
   text-align: center;
   margin-bottom: 15px;
 }
-* + .table-export_btn{
+* + .table-export_btn {
   margin-left: 15px;
+}
+
+.label-tag {
+  margin: 2px;
 }
 </style>
