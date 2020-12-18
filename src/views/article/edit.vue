@@ -3,90 +3,96 @@
     <srm-form
       v-model="detailForm"
       form-name="detailForm"
-      class="my-form"
+      :rules="rules"
       :reset-msg="false"
       :form-items="formItems"
       :inline="false"
       @submit="submit"
-    >
-    </srm-form>
+      class="my-form"
+    ></srm-form>
   </div>
 </template>
 <script>
-import { fetchArticle, updateArticle, createArticle } from "api/article";
-import { statusMap, labelMap } from "assets/data-maps";
-import detailMixin from "@/mixins/detailMixin";
+import { fetchArticle, updateArticle, createArticle } from 'api/article';
+import { statusMap, labelMap } from 'assets/data-maps';
+import detailMixin from '@/mixins/detailMixin';
 export default {
-  name: "ArticleEdit",
+  name: 'ArticleEdit',
   components: {},
   mixins: [detailMixin],
   data() {
     return {
+      rules: {
+        title: [{ required: true, message: '标题不能为空', trigger: 'click' }],
+        url: [{ required: true, message: '链接不能为空', trigger: 'click' }],
+        state: [{ required: true, message: '请选择状态', trigger: 'click' }],
+        label: [{ required: true, message: '请选择标签', trigger: 'click' }]
+      },
       detailForm: {},
       formItems: [
         {
-          tag: "input",
+          tag: 'input',
           itemAttrs: {
-            label: "文章标题",
+            label: '文章标题',
             col: 18
           },
           attrs: {
-            key: "title",
-            placeholder: "请输入标题"
+            key: 'title',
+            placeholder: '请输入标题'
           }
         },
         {
-          tag: "input",
+          tag: 'input',
           itemAttrs: {
-            label: "文章链接",
+            label: '文章链接',
             col: 18
           },
           attrs: {
-            key: "url",
-            placeholder: "请输入文章链接"
+            key: 'url',
+            placeholder: '请输入文章链接'
           }
         },
         {
-          tag: "select",
+          tag: 'select',
           itemAttrs: {
-            label: "文章状态",
+            label: '文章状态',
             col: 18
           },
           attrs: {
-            key: "state",
+            key: 'state',
             options: statusMap,
-            placeholder: "请选择文章状态"
+            placeholder: '请选择文章状态'
           }
         },
         {
-          tag: "select",
+          tag: 'select',
           itemAttrs: {
-            label: "文章标签",
+            label: '文章标签',
             col: 18
           },
           attrs: {
-            key: "label",
+            key: 'label',
             options: labelMap,
-            placeholder: "请选择文章标签",
+            placeholder: '请选择文章标签',
             multiple: true
           }
         },
         {
-          tag: "switch",
+          tag: 'switch',
           itemAttrs: {
-            label: "是否置顶"
+            label: '是否置顶'
           },
           attrs: {
-            key: "isTop"
+            key: 'isTop'
           }
         },
         {
-          tag: "upload",
+          tag: 'upload',
           itemAttrs: {
-            label: "文章封面"
+            label: '文章封面'
           },
           attrs: {
-            key: "img"
+            key: 'img'
           }
         }
       ]
@@ -113,20 +119,20 @@ export default {
       }
     },
     async submit() {
-      let msg = "文章更新成功";
+      let msg = '文章更新成功';
       const data = Object.assign({}, this.detailForm);
-      data.label = data.label.join(",");
+      data.label = data.label.join(',');
       data.isTop = data.isTop ? 1 : 0;
       console.log(data);
       return;
       if (this.id) {
         data.id = this.id;
-        msg = "创建文章成功";
+        msg = '创建文章成功';
       }
       const { code } = await this.submitFn(data);
       if (code === 20000) {
         this.$message.success(msg);
-        this.goListWithRefresh("/article/list");
+        this.goListWithRefresh('/article/list');
       }
     }
   }

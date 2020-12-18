@@ -1,20 +1,9 @@
 <template>
   <span class="srm-upload_container">
-    <el-upload
-      v-if="!$attrs.multiple"
-      class="image-uploader"
-      :action="action"
-      :show-file-list="showFileList"
-      :on-success="uploadSuccess"
-      :before-upload="beforeUpload"
-      v-bind="$attrs"
-    >
+    <el-upload v-if="!$attrs.multiple" class="image-uploader" name="img" :action="action" :show-file-list="showFileList" :on-success="uploadSuccess" :before-upload="beforeUpload" v-bind="$attrs">
       <div class="upload-wrap" :style="imgStyle">
         <component :is="$attrs['is-video'] ? 'video' : 'img'" v-if="src" class="avatar" :src="src" />
-        <i
-          v-else
-          class="el-icon-plus avatar-uploader-icon"
-        />
+        <i v-else class="el-icon-plus avatar-uploader-icon" />
       </div>
     </el-upload>
     <!--
@@ -27,6 +16,7 @@
       :file-list="fileList"
       :action="action"
       list-type="picture-card"
+      name="img"
       :on-preview="handlePictureCardPreview"
       :on-remove="handleRemove"
       :on-exceed="onExceed"
@@ -39,16 +29,16 @@
       </div> -->
       <i class="el-icon-plus" />
     </el-upload>
-    <div
-      v-if="showMsg"
-      class="el-upload__tip"
-    >只能上传{{ ext }}文件，且不超过{{ maxSizeWithUnit }} <span v-if="$attrs.limit">最多上传{{ $attrs.limit }}张</span> </div>
+    <div v-if="showMsg" class="el-upload__tip">
+      只能上传{{ ext }}文件，且不超过{{ maxSizeWithUnit }}
+      <span v-if="$attrs.limit">最多上传{{ $attrs.limit }}张</span>
+    </div>
     <ImagePreview :current-img.sync="previewSrc" />
   </span>
 </template>
 <script>
-import ImagePreview from '@/components/ImagePreview'
-import { uploadAction } from 'api/upload'
+import ImagePreview from '@/components/ImagePreview';
+import { uploadAction } from 'api/upload';
 export default {
   name: 'SrmUpload',
   components: {
@@ -91,7 +81,7 @@ export default {
       src: '',
       previewSrc: '',
       fileList: []
-    }
+    };
   },
   computed: {
     // fileList() {
@@ -105,75 +95,76 @@ export default {
     // },
     maxSizeWithUnit() {
       if (this.maxSize > 1024) {
-        return (this.maxSize / 1024).toFixed(2) + 'MB'
+        return (this.maxSize / 1024).toFixed(2) + 'MB';
       }
-      return this.maxSize + 'KB'
+      return this.maxSize + 'KB';
     }
   },
   watch: {
-    'imageUrl': {
+    imageUrl: {
       handler: 'getSrc',
       immediate: true
     }
   },
   methods: {
     getSrc() {
-      const src = this.imageUrl || this.$attrs.value
+      const src = this.imageUrl || this.$attrs.value;
       if (this.$attrs.multiple) {
-        this.src = Array.isArray(src) ? src : src ? [src] : []
+        this.src = Array.isArray(src) ? src : src ? [src] : [];
       } else {
-        this.src = src
+        this.src = src;
       }
-      if (this.init) return
+      if (this.init) return;
       if (this.$attrs.multiple && Array.isArray(this.src)) {
         this.src.map((src, idx) => {
           if (!this.fileList.find(v => v.url === src)) {
             this.fileList.push({
               name: idx,
               url: src
-            })
+            });
           }
-        })
+        });
       } else {
-        this.fileList = []
+        this.fileList = [];
       }
     },
     onExceed(files) {
       this.$message({
         message: `最多上传${this.$attrs.limit}张图片`,
         type: 'warning'
-      })
+      });
     },
     handlePictureCardPreview(src) {
-      this.previewSrc = src.url
+      this.previewSrc = src.url;
     },
     handleRemove(file, fileList) {
-      this.src = fileList.map(item => item.url || item.data)
-      this.$emit('update', this.src)
+      this.src = fileList.map(item => item.url || item.data);
+      this.$emit('update', this.src);
     },
     beforeUpload: function(file) {
-      this.init = true // 标志位
-      const ext = this.ext
-      const maxSize = this.maxSize
-      const isOkExt = ext.indexOf(file.name.substring(file.name.lastIndexOf('.')).toLocaleLowerCase()) >= 0
+      console.log(file, 'ccccc');
+      this.init = true; // 标志位
+      const ext = this.ext;
+      const maxSize = this.maxSize;
+      const isOkExt = ext.indexOf(file.name.substring(file.name.lastIndexOf('.')).toLocaleLowerCase()) >= 0;
       if (!isOkExt) {
-        this.$message.error('只能上传' + ext + '格式的文件')
-        return false
+        this.$message.error('只能上传' + ext + '格式的文件');
+        return false;
       }
-      const isLtmaxWidth = file.size / 1024 < maxSize
+      const isLtmaxWidth = file.size / 1024 < maxSize;
       if (!isLtmaxWidth) {
-        this.$message.error('上传文件大小不能超过' + maxSize + 'KB!')
-        return false
+        this.$message.error('上传文件大小不能超过' + maxSize + 'KB!');
+        return false;
       }
-      return true
+      return true;
     },
     changeImg(file, fileList) {
       const flag = fileList.every(img => {
-        return img.response || img.url.startsWith('https://')
-      })
+        return img.response || img.url.startsWith('https://');
+      });
       if (flag) {
-        const src = fileList.map(img => img.data || img.url)
-        this.$emit('update', src)
+        const src = fileList.map(img => img.data || img.url);
+        this.$emit('update', src);
       }
     },
     uploadSuccess(response, file, fileList) {
@@ -188,14 +179,13 @@ export default {
         //   // this.src.push(newList)
         // }
       } else {
-        const newUrl = response.data
-        this.src = newUrl
+        const newUrl = response.data;
+        this.src = newUrl;
       }
-      this.$emit('update', this.src)
+      this.$emit('update', this.src);
     }
   }
-}
-
+};
 </script>
 <style lang="scss" scoped>
 .image-uploader /deep/ {
@@ -218,9 +208,11 @@ export default {
   // }
 }
 .srm-upload_container /deep/ {
-  .upload-wrap{
+  .upload-wrap {
     width: 120px;
-    i, img, video {
+    i,
+    img,
+    video {
       display: block;
       width: 100%;
       height: 100%;
@@ -230,11 +222,10 @@ export default {
       font-size: 28px;
       color: #8c939d;
     }
-    i{
+    i {
       width: 120px;
       height: 120px;
     }
   }
 }
-
 </style>

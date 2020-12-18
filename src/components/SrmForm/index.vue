@@ -280,4 +280,8 @@ export default {
 .el-cascader {
   width: 100%;
 }
+
+.el-form-item--small.el-form-item {
+  margin-bottom: 20px;
+}
 </style>
