@@ -1,4 +1,5 @@
 import axios from 'axios';
+import Qs from 'qs';
 import { MessageBox, Message } from 'element-ui';
 import store from '@/store';
 import { getToken } from '@/utils/auth';
@@ -18,6 +19,11 @@ const service = axios.create({
 // request interceptor
 service.interceptors.request.use(
   config => {
+    /* 特殊页面，需要对数据做处理 */
+    if (config.method.toUpperCase() === 'POST' || config.method.toUpperCase() === 'PUT') {
+      config.data = Qs.stringify(config.data);
+    }
+
     // do something before request is sent
     showFullScreenLoading();
     config.headers['platform'] = 'app_web_manager';
