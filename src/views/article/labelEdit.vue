@@ -1,6 +1,14 @@
 <template>
   <div>
-    <srm-form v-model="detailForm" form-name="detailForm" :reset-msg="false" :form-items="formItems" :inline="false" @submit="submit"></srm-form>
+    <srm-form
+      v-model="detailForm"
+      :rules="rules"
+      form-name="detailForm"
+      :reset-msg="false"
+      :form-items="formItems"
+      :inline="false"
+      @submit="submit"
+    ></srm-form>
   </div>
 </template>
 <script>
@@ -12,6 +20,9 @@ export default {
   mixins: [detailMixin],
   data() {
     return {
+      rules: {
+        labelName: [{ required: true, message: '标签不能为空', trigger: 'click' }]
+      },
       detailForm: {},
       formItems: [
         {
@@ -49,19 +60,12 @@ export default {
     //   }
     // },
     async submit() {
-      let msg = '文章更新成功';
       const data = Object.assign({}, this.detailForm);
-      // if (this.id) {
-      //   data.id = this.id;
-      //   msg = '创建文章成功';
-      // }
-      console.log(data);
-      const { code } = await insertArticleLabel(data);
-      console.log(code);
-      // if (code === 20000) {
-      //   this.$message.success(msg)
-      //   this.goListWithRefresh('/article/list')
-      // }
+      const { code, msg } = await insertArticleLabel(data);
+      if (code === 0) {
+        this.$message.success(msg);
+        this.goListWithRefresh('/article/label');
+      }
     }
   }
 };

@@ -23,102 +23,81 @@
       @changePage="changePage"
       @changeSize="changeSize"
     >
-      <el-button
-        slot="buttons"
-        type="success"
-        icon="el-icon-plus"
-        @click="setItem({}, 'create')"
-        >新增</el-button
-      >
+      <el-button slot="buttons" type="success" icon="el-icon-plus" @click="setItem({}, 'create')">新增</el-button>
       <el-table-column slot="operation" label="操作" width="180" align="center">
         <template slot-scope="scope">
           <el-button type="text" @click="setItem(scope.row, 'delete')">
             删除
           </el-button>
-          <el-button type="text" @click="setItem(scope.row, 'edit')">
-            编辑
-          </el-button>
         </template>
       </el-table-column>
     </srm-table>
-    <srm-dialog-check
-      content="确认删除该文章吗？"
-      :current-item.sync="checkDialogItem"
-      @confirmItem="deleteItem"
-    />
+    <srm-dialog-check content="确认删除该文章吗？" :current-item.sync="checkDialogItem" @confirmItem="deleteItem" />
   </div>
 </template>
 <script>
-import { fetchList, deleteArticle } from "@/api/article";
-import { statusMap } from "assets/data-maps";
-import pageMixin from "@/mixins/pageMixin";
+import { fetchList, deleteArticleLabel } from '@/api/label';
+import { statusMap } from 'assets/data-maps';
+import { formatTimer } from '@/utils';
+import pageMixin from '@/mixins/pageMixin';
 export default {
-  name: "ArticleList",
+  name: 'ArticleList',
   mixins: [pageMixin],
   data() {
     return {
       fetchList,
       deleteVisible: false,
       columns: [
-        { type: "index", label: "序号", width: 100 },
+        { type: 'index', label: '序号', width: 100 },
         {
-          prop: "label",
-          label: "标签名称",
+          prop: 'labelName',
+          label: '标签名称',
           isLabel: true
         },
-        { prop: "display_time", label: "创建时间" },
+        { prop: 'createTime', label: '创建时间', formatter: this.createTimeFormat },
         // 没有prop的列不会被导出
-        { slot: "operation", label: "操作" }
+        { slot: 'operation', label: '操作' }
       ],
       queryColumns: [
         {
-          tag: "input",
+          tag: 'input',
           itemAttrs: {
-            label: "搜索"
+            label: '搜索'
           },
           attrs: {
-            key: "title",
-            placeholder: "请输入标签名称关键字搜索"
+            key: 'labelName',
+            placeholder: '请输入关键字搜索'
           }
         }
       ]
     };
   },
   methods: {
-    statusFormat(row, column, cellvalue) {
-      return statusMap.find(item => item.value === cellvalue).label;
+    createTimeFormat(row, column, cellvalue) {
+      return formatTimer(cellvalue / 1000, true);
     },
     setItem(item, type) {
       switch (type) {
-        case "delete":
+        case 'delete':
+          console.log(item, '删除');
           this.checkDialogItem = item;
           break;
-        case "detail":
-          this.$router.push({
-            name: "ArticleDetail",
-            params: {
-              id: item.id
-            }
-          });
-          break;
-        case "edit":
-          this.$router.push(`/article/edit/${item.id}`);
-          break;
-        case "create":
-          this.$router.push("/article/labelEdit");
+        case 'create':
+          this.$router.push('/article/labelEdit');
           break;
         default:
           break;
       }
     },
     deleteItem(item) {
+      console.log(item);
       let id;
       if (Array.isArray(item)) {
-        id = item.map(v => v.id);
+        id = item.map(v => v.id).join(',');
       } else {
         id = item.id;
       }
-      this.mixinHandleItem(deleteArticle, this.getList, id);
+      this.mixinHandleItem(deleteArticleLabel, this.getList, id);
     }
   }
 };

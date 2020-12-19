@@ -14,11 +14,9 @@
   </div>
 </template>
 <script>
-import {
-  fetchList
-} from '@/api/article'
-import { statusMap } from 'assets/data-maps'
-import pageMixin from '@/mixins/pageMixin'
+import { fetchList } from '@/api/article';
+import { statusMap } from 'assets/data-maps';
+import pageMixin from '@/mixins/pageMixin';
 export default {
   name: 'TableExample1',
   mixins: [pageMixin],
@@ -34,12 +32,12 @@ export default {
         { prop: 'status', label: '当前状态', formatter: this.statusFormat },
         { prop: 'display_time', label: '发布时间' }
       ]
-    }
+    };
   },
   methods: {
     statusFormat(row, column, cellvalue) {
-      return statusMap.find(item => item.value === cellvalue).label
+      return statusMap.find(item => item.value === cellvalue).label;
     }
   }
-}
+};
 </script>

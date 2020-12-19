@@ -1,4 +1,4 @@
-import SrmDialogCheck from "@/components/SrmDialogCheck";
+import SrmDialogCheck from '@/components/SrmDialogCheck';
 export default {
   data() {
     return {
@@ -20,17 +20,15 @@ export default {
   },
   watch: {
     listQuery: {
-      handler: "getList",
+      handler: 'getList',
       deep: true
     }
   },
   // 激活时判断是否需要重新请求列表页
   activated() {
-    if (
-      this.$store.state.page.needRefreshRouteList.includes(this.$route.path)
-    ) {
+    if (this.$store.state.page.needRefreshRouteList.includes(this.$route.path)) {
       this.getList();
-      this.$store.commit("page/REMOVE_ROUTE", this.$route.path);
+      this.$store.commit('page/REMOVE_ROUTE', this.$route.path);
     }
   },
   mounted() {
@@ -57,21 +55,21 @@ export default {
     },
     // 获取列表数据
     getList() {
-      if (!this.fetchList || typeof this.fetchList !== "function") {
-        this.$message.error("请把列表接口函数赋值给fetchList");
+      if (!this.fetchList || typeof this.fetchList !== 'function') {
+        this.$message.error('请把列表接口函数赋值给fetchList');
         return;
       }
       this.listLoading = true;
       const query = this.$filterEmptyValue(this.listQuery, this.searchForm);
       this.fetchList(query).then(response => {
         // 基于接口统一处理
-        this.tableData = response.data.items;
-        this.total = response.data.total;
+        this.tableData = response.data;
+        this.total = 10;
         this.listLoading = false;
-        this.tableData.forEach(item => {
-          item.label = ["前端", "React", "Vue"];
-        });
-        console.log(this.tableData, "cc");
+        // this.tableData.forEach(item => {
+        //   item.label = ['前端', 'React', 'Vue'];
+        // });
+        console.log(this.tableData, 'cc');
       });
     },
     /**
@@ -80,15 +78,15 @@ export default {
      * cb: 回调（可传空）
      * ...rest: 需要执行函数的参数
      */
-    async mixinHandleItem(fn, cb, ...rest) {
-      const { code, data } = await fn(...rest);
-      if (code === 20000) {
-        this.$message.success("操作成功");
-        if (cb && typeof cb === "function") {
+    async mixinHandleItem(fn, cb, rest) {
+      const { code, data } = await fn({ id: rest });
+      if (code === 0) {
+        this.$message.success('操作成功');
+        if (cb && typeof cb === 'function') {
           cb();
         }
       } else {
-        this.$message.error(data || "操作失败，请重试");
+        this.$message.error(data || '操作失败，请重试');
       }
     }
   }

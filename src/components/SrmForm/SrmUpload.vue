@@ -1,6 +1,17 @@
 <template>
   <span class="srm-upload_container">
-    <el-upload v-if="!$attrs.multiple" class="image-uploader" name="img" :action="action" :show-file-list="showFileList" :on-success="uploadSuccess" :before-upload="beforeUpload" v-bind="$attrs">
+    <el-upload
+      v-if="!$attrs.multiple"
+      class="image-uploader"
+      name="img"
+      :action="action"
+      :show-file-list="showFileList"
+      :on-success="uploadSuccess"
+      :on-preview="handlePictureCardPreview"
+      :on-remove="handleRemove"
+      :before-upload="beforeUpload"
+      v-bind="$attrs"
+    >
       <div class="upload-wrap" :style="imgStyle">
         <component :is="$attrs['is-video'] ? 'video' : 'img'" v-if="src" class="avatar" :src="src" />
         <i v-else class="el-icon-plus avatar-uploader-icon" />
@@ -80,7 +91,8 @@ export default {
       init: false,
       src: '',
       previewSrc: '',
-      fileList: []
+      fileList: [],
+      prefix: 'http://121.196.189.114:8020' // 图片前缀域名
     };
   },
   computed: {
@@ -142,7 +154,6 @@ export default {
       this.$emit('update', this.src);
     },
     beforeUpload: function(file) {
-      console.log(file, 'ccccc');
       this.init = true; // 标志位
       const ext = this.ext;
       const maxSize = this.maxSize;
@@ -180,7 +191,7 @@ export default {
         // }
       } else {
         const newUrl = response.data;
-        this.src = newUrl;
+        this.src = `${this.prefix}${newUrl}`;
       }
       this.$emit('update', this.src);
     }

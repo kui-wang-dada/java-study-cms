@@ -11,28 +11,14 @@
         icon="el-icon-download"
         @click="handleDownload"
       >
-        <span>导出</span
-        ><span v-show="selections.length">{{ selections.length }}项</span>
+        <span>导出</span>
+        <span v-show="selections.length">{{ selections.length }}项</span>
       </el-button>
     </div>
-    <el-table
-      v-loading="loading"
-      :data="sourceData"
-      style="width: 100%"
-      @selection-change="selectionChange"
-    >
-      <el-table-column
-        v-if="selectVisible"
-        type="selection"
-        width="45"
-        align="center"
-      />
+    <el-table v-loading="loading" :data="sourceData" style="width: 100%" @selection-change="selectionChange">
+      <el-table-column v-if="selectVisible" type="selection" width="45" align="center" />
       <template v-for="(column, index) in columns">
-        <el-table-column
-          v-if="column.render"
-          :key="column.prop"
-          :label="column.label"
-        >
+        <el-table-column v-if="column.render" :key="column.prop" :label="column.label">
           <template slot-scope="scope">
             <Render :row="scope.row" :index="index" :render="column.render" />
           </template>
@@ -40,11 +26,7 @@
         <slot v-else-if="column.slot" :name="column.slot" />
 
         <!-- 图片 -->
-        <el-table-column
-          v-else-if="column.isImg"
-          :key="column.prop"
-          v-bind="setAttrs(column)"
-        >
+        <el-table-column v-else-if="column.isImg" :key="column.prop" v-bind="setAttrs(column)">
           <template slot-scope="scope">
             <el-image
               class="srm-table_img"
@@ -59,28 +41,16 @@
         </el-table-column>
 
         <!-- link标签 -->
-        <el-table-column
-          v-else-if="column.isLink"
-          :key="column.prop"
-          v-bind="setAttrs(column)"
-        >
+        <el-table-column v-else-if="column.isLink" :key="column.prop" v-bind="setAttrs(column)">
           <template slot-scope="scope">
-            <el-link
-              :href="scope.row[column.prop]"
-              type="primary"
-              target="_blank"
-            >
+            <el-link :href="scope.row[column.prop]" type="primary" target="_blank">
               {{ scope.row[column.prop] }}
             </el-link>
           </template>
         </el-table-column>
 
         <!-- tag -->
-        <el-table-column
-          v-else-if="column.isTag"
-          :key="column.prop"
-          v-bind="setAttrs(column)"
-        >
+        <el-table-column v-else-if="column.isTag" :key="column.prop" v-bind="setAttrs(column)">
           <template slot-scope="scope">
             <el-tag :type="scope.row[column.prop] | statusTag">
               {{ scope.row[column.prop] | statusName }}
@@ -89,19 +59,16 @@
         </el-table-column>
 
         <!-- 标签 -->
-        <el-table-column
-          v-else-if="column.isLabel"
-          :key="column.prop"
-          v-bind="setAttrs(column)"
-        >
+        <el-table-column v-else-if="column.isLabel" :key="column.prop" v-bind="setAttrs(column)">
           <template slot-scope="scope">
-            <el-tag
-              v-for="tag in scope.row[column.prop]"
-              :key="tag"
-              class="label-tag"
-            >
-              {{ tag }}
-            </el-tag>
+            <template v-if="Array.isArray(scope.row[column.prop])">
+              <el-tag v-for="tag in scope.row[column.prop]" :key="tag" class="label-tag">
+                {{ tag }}
+              </el-tag>
+            </template>
+            <template v-else>
+              <el-tag>{{ scope.row[column.prop] }}</el-tag>
+            </template>
           </template>
         </el-table-column>
 
@@ -111,16 +78,9 @@
     <!--分页栏-->
     <div class="toolbar">
       <div v-if="deleteVisible" class="handle-wrap">
-        <el-button
-          class="button"
-          size="small"
-          type="danger"
-          :disabled="!selections.length"
-          icon="el-icon-delete"
-          @click="handleBatchDelete"
-        >
-          <span>删除</span
-          ><span v-show="selections.length">{{ selections.length }}项</span>
+        <el-button class="button" size="small" type="danger" :disabled="!selections.length" icon="el-icon-delete" @click="handleBatchDelete">
+          <span>删除</span>
+          <span v-show="selections.length">{{ selections.length }}项</span>
         </el-button>
       </div>
       <el-pagination
@@ -139,12 +99,12 @@
   </div>
 </template>
 <script>
-import Render from "./render";
-import { statusMap } from "assets/data-maps";
-import { scrollTo } from "@/utils/scroll-to";
+import Render from './render';
+import { statusMap } from 'assets/data-maps';
+import { scrollTo } from '@/utils/scroll-to';
 
 export default {
-  name: "SrmTable",
+  name: 'SrmTable',
   components: {
     Render
     // ImagePreview
@@ -196,7 +156,7 @@ export default {
     // 导出文件默认名称
     exportName: {
       type: String,
-      default: ""
+      default: ''
     },
     // 每页条数选择器
     pageSizes: {
@@ -214,7 +174,7 @@ export default {
   filters: {
     // tag类型
     statusTag(status) {
-      return [null, "success", "success", "danger"][status];
+      return [null, 'success', 'success', 'danger'][status];
     },
 
     // 文章状态
@@ -224,11 +184,11 @@ export default {
   },
   computed: {
     layout() {
-      const layout = ["total", "prev", "pager", "next"];
+      const layout = ['total', 'prev', 'pager', 'next'];
       if (this.pageSizes.length) {
-        layout.push("sizes");
+        layout.push('sizes');
       }
-      return layout.join(", ");
+      return layout.join(', ');
     }
   },
   watch: {
@@ -240,30 +200,30 @@ export default {
     // 已选项
     selectionChange(selections) {
       this.selections = selections;
-      this.$emit("selectionChange", { selections });
+      this.$emit('selectionChange', { selections });
     },
     // 批量删除
     handleBatchDelete() {
-      this.$emit("handleBatchDelete", this.selections);
+      this.$emit('handleBatchDelete', this.selections);
     },
     // 切换页面
     currentChange(page) {
-      this.$emit("changePage", page);
+      this.$emit('changePage', page);
     },
     sizeChange(size) {
-      this.$emit("changeSize", size);
+      this.$emit('changeSize', size);
     },
     setAttrs(params) {
       // eslint-disable-next-line
       const { slot, ...options } = params;
       if (!options.align) {
-        options.align = "center";
+        options.align = 'center';
       }
       return { ...options };
     },
     handleDownload() {
       this.downloadLoading = true;
-      import("@/vendor/Export2Excel").then(excel => {
+      import('@/vendor/Export2Excel').then(excel => {
         const filterColumn = this.columns.filter(v => v.prop);
         const tHeader = [];
         const data = this.selections.map(item =>
@@ -271,7 +231,7 @@ export default {
             if (!col.prop) return;
             tHeader.push(col.label);
             if (col.formatter) {
-              return col.formatter(item, "", item[col.prop]);
+              return col.formatter(item, '', item[col.prop]);
             }
             return item[col.prop];
           })
@@ -295,7 +255,7 @@ export default {
   cursor: pointer;
 }
 .toolbar {
-  margin-top: 15px;
+  margin-top: 40px;
   padding: 0 15px;
   display: flex;
   align-items: center;

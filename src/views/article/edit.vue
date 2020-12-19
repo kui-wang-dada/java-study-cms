@@ -14,13 +14,15 @@
 </template>
 <script>
 import { fetchArticle, updateArticle, createArticle } from 'api/article';
-import { statusMap, labelMap } from 'assets/data-maps';
+import { fetchList } from '@/api/label';
+import { statusMap } from 'assets/data-maps';
 import detailMixin from '@/mixins/detailMixin';
 export default {
   name: 'ArticleEdit',
   components: {},
   mixins: [detailMixin],
   data() {
+    const labelMap = [];
     return {
       rules: {
         title: [{ required: true, message: '标题不能为空', trigger: 'click' }],
@@ -110,6 +112,17 @@ export default {
     }
   },
   methods: {
+    async getLabel() {
+      // 获取label
+      const { data } = await fetchList();
+      data.map(item => {
+        return {
+          label: item.labelName,
+          value: item.id
+        };
+      });
+    },
+
     async getDetail() {
       const { code, data } = await fetchArticle(this.id);
       if (code === 20000) {
