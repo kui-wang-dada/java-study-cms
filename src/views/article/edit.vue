@@ -15,14 +15,16 @@
 <script>
 import { fetchArticle, updateArticle, createArticle } from 'api/article';
 import { fetchList } from '@/api/label';
-import { statusMap } from 'assets/data-maps';
+import { statusMap, getLabel } from 'assets/data-maps';
 import detailMixin from '@/mixins/detailMixin';
+// label文章标签
+let labelMap = [];
+getLabel().then(res => labelMap = res);
 export default {
   name: 'ArticleEdit',
   components: {},
   mixins: [detailMixin],
   data() {
-    const labelMap = [];
     return {
       rules: {
         title: [{ required: true, message: '标题不能为空', trigger: 'click' }],
@@ -112,17 +114,6 @@ export default {
     }
   },
   methods: {
-    async getLabel() {
-      // 获取label
-      const { data } = await fetchList();
-      data.map(item => {
-        return {
-          label: item.labelName,
-          value: item.id
-        };
-      });
-    },
-
     async getDetail() {
       const { code, data } = await fetchArticle(this.id);
       if (code === 20000) {
@@ -132,18 +123,17 @@ export default {
       }
     },
     async submit() {
-      let msg = '文章更新成功';
       const data = Object.assign({}, this.detailForm);
       data.label = data.label.join(',');
       data.isTop = data.isTop ? 1 : 0;
       console.log(data);
-      return;
-      if (this.id) {
-        data.id = this.id;
-        msg = '创建文章成功';
-      }
-      const { code } = await this.submitFn(data);
-      if (code === 20000) {
+      // return;
+      // if (this.id) {
+      //   data.id = this.id;
+      //   msg = '创建文章成功';
+      // }
+      const { code ,msg} = await this.submitFn(data);
+      if (code === 0) {
         this.$message.success(msg);
         this.goListWithRefresh('/article/list');
       }
