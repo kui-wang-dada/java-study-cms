@@ -55,7 +55,7 @@ module.exports = {
    */
   // publicPath: './',
   publicPath: IS_PRODUCTION ? cdnDomian : './',
-  outputDir: 'dist',
+  outputDir: 'cms',
   assetsDir: 'static',
   lintOnSave: process.env.NODE_ENV === 'development',
   productionSourceMap: false,
