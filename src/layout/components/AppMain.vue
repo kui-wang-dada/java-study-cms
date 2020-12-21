@@ -31,7 +31,7 @@ export default {
   position: relative;
   overflow: hidden;
   box-sizing: border-box;
-  padding: 15px;
+  padding: 15px 15px 50px 15px;
 }
 .fixed-header+.app-main {
   padding-top: 50px;

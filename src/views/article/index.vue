@@ -18,6 +18,7 @@
       :page-request="listQuery"
       :loading="listLoading"
       :page-sizes="[10, 25, 50]"
+      :exportVisible="false"
       @handleBatchDelete="setItem($event, 'delete')"
       @changePage="changePage"
       @changeSize="changeSize"
@@ -53,6 +54,7 @@
 <script>
 import { fetchList, deleteArticle } from "@/api/article";
 import { statusMap } from "assets/data-maps";
+import { formatTimer } from '@/utils';
 import pageMixin from "@/mixins/pageMixin";
 export default {
   name: "ArticleList",
@@ -69,26 +71,31 @@ export default {
           "show-overflow-tooltip": true,
           width: 300
         },
-        { prop: "image_uri", label: "封面", isImg: true, width: 120 },
+        { prop: "img1", label: "封面", isImg: true, width: 120 },
         {
-          prop: "image_uri",
+          prop: "url",
           label: "链接",
           width: 300,
           isLink: true
         },
         {
-          prop: "status",
+          prop: "state",
           label: "当前状态",
           isTag: true,
           width: 100
         },
         {
-          prop: "label",
+          prop: "labelList",
           label: "标签",
           isLabel: true,
           width: 200
         },
-        { prop: "display_time", label: "发布时间" },
+        { 
+          prop: "createTime",
+           label: "发布时间", 
+           formatter: this.createTimeFormat,
+           width: 200
+        },
         // 没有prop的列不会被导出
         { slot: "operation", label: "操作" }
       ],
@@ -109,7 +116,7 @@ export default {
             label: "文章状态"
           },
           attrs: {
-            key: "status",
+            key: "state",
             options: statusMap
           }
         }
@@ -117,8 +124,8 @@ export default {
     };
   },
   methods: {
-    statusFormat(row, column, cellvalue) {
-      return statusMap.find(item => item.value === cellvalue).label;
+    createTimeFormat(row, column, cellvalue) {
+      return formatTimer(cellvalue / 1000, true);
     },
     setItem(item, type) {
       switch (type) {
@@ -146,7 +153,7 @@ export default {
     deleteItem(item) {
       let id;
       if (Array.isArray(item)) {
-        id = item.map(v => v.id);
+        id = item.map(v => v.id).join(',');
       } else {
         id = item.id;
       }

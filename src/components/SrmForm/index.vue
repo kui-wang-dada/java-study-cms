@@ -281,7 +281,11 @@ export default {
   width: 100%;
 }
 
+.el-form-item--small .el-form-item__error {
+    padding-top: 3px;
+}
+
 .el-form-item--small.el-form-item {
-  margin-bottom: 20px;
+  margin-bottom: 21px;
 }
 </style>

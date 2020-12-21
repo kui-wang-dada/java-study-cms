@@ -63,7 +63,7 @@ export default {
       const query = this.$filterEmptyValue(this.listQuery, this.searchForm);
       this.fetchList(query).then(response => {
         // 基于接口统一处理
-        this.tableData = response.data;
+        this.tableData = Array.isArray(response.data) ? response.data : response.data.list;
         this.total = 10;
         this.listLoading = false;
         // this.tableData.forEach(item => {

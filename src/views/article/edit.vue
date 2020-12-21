@@ -17,9 +17,6 @@ import { fetchArticle, updateArticle, createArticle } from 'api/article';
 import { fetchList } from '@/api/label';
 import { statusMap, getLabel } from 'assets/data-maps';
 import detailMixin from '@/mixins/detailMixin';
-// label文章标签
-let labelMap = [];
-getLabel().then(res => labelMap = res);
 export default {
   name: 'ArticleEdit',
   components: {},
@@ -30,7 +27,8 @@ export default {
         title: [{ required: true, message: '标题不能为空', trigger: 'click' }],
         url: [{ required: true, message: '链接不能为空', trigger: 'click' }],
         state: [{ required: true, message: '请选择状态', trigger: 'click' }],
-        label: [{ required: true, message: '请选择标签', trigger: 'click' }]
+        label: [{ required: true, message: '请选择标签', trigger: 'click' }],
+        img: [{ required: true, message: '请上传封面', trigger: 'click' }]
       },
       detailForm: {},
       formItems: [
@@ -76,7 +74,7 @@ export default {
           },
           attrs: {
             key: 'label',
-            options: labelMap,
+            options: [],
             placeholder: '请选择文章标签',
             multiple: true
           }
@@ -112,6 +110,11 @@ export default {
     if (this.id) {
       this.getDetail();
     }
+
+    // label文章标签
+    getLabel().then(res => {
+      this.formItems[3].attrs.options = res;
+    });
   },
   methods: {
     async getDetail() {

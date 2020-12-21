@@ -40,12 +40,12 @@ export function updateArticle(data) {
   });
 }
 
-export function deleteArticle(id) {
+export function deleteArticle(query) {
   return request({
-    url: "/article/delete",
+    url: "/article/home/deleteArticleHome",
     method: "post",
     data: {
-      id
+      articleId: query.id
     }
   });
 }

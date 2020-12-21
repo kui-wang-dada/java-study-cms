@@ -37,11 +37,10 @@
 </template>
 <script>
 import { fetchList, deleteArticleLabel } from '@/api/label';
-import { statusMap } from 'assets/data-maps';
 import { formatTimer } from '@/utils';
 import pageMixin from '@/mixins/pageMixin';
 export default {
-  name: 'ArticleList',
+  name: 'ArticleListLabel',
   mixins: [pageMixin],
   data() {
     return {
@@ -90,7 +89,6 @@ export default {
       }
     },
     deleteItem(item) {
-      console.log(item);
       let id;
       if (Array.isArray(item)) {
         id = item.map(v => v.id).join(',');

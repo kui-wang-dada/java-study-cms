@@ -62,8 +62,8 @@
         <el-table-column v-else-if="column.isLabel" :key="column.prop" v-bind="setAttrs(column)">
           <template slot-scope="scope">
             <template v-if="Array.isArray(scope.row[column.prop])">
-              <el-tag v-for="tag in scope.row[column.prop]" :key="tag" class="label-tag">
-                {{ tag }}
+              <el-tag v-for="tag in scope.row[column.prop]" :key="tag.id" class="label-tag">
+                {{ tag.labelName }}
               </el-tag>
             </template>
             <template v-else>
@@ -102,6 +102,7 @@
 import Render from './render';
 import { statusMap } from 'assets/data-maps';
 import { scrollTo } from '@/utils/scroll-to';
+import { parse } from 'path';
 
 export default {
   name: 'SrmTable',
@@ -174,12 +175,12 @@ export default {
   filters: {
     // tag类型
     statusTag(status) {
-      return [null, 'success', 'success', 'danger'][status];
+      return ['danger', 'success'][parseInt(status)];
     },
 
     // 文章状态
     statusName(status) {
-      return statusMap.find(item => item.value === status).label;
+      return statusMap.find(item => item.value === parseInt(status)).label;
     }
   },
   computed: {
