@@ -8,11 +8,11 @@ export function fetchList(query) {
   });
 }
 
-export function fetchArticle(data) {
+export function fetchArticle(query) {
   return request({
     url: '/article/home/selectArticleHomeById',
-    method: 'post',
-    data
+    method: 'get',
+    params: query
   });
 }
 
@@ -35,9 +35,7 @@ export function updateArticle(data) {
 export function deleteArticle(query) {
   return request({
     url: '/article/home/deleteArticleHome',
-    method: 'post',
-    data: {
-      articleId: query.id
-    }
+    method: 'get',
+    params: query
   });
 }

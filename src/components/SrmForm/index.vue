@@ -177,7 +177,6 @@ export default {
       if (!item._ifRender) {
         delete Model[item.attrs.key];
       }
-      console.log(item, '999999');
       // form-item 配置
       return item;
     },

@@ -1,15 +1,6 @@
 <template>
   <div class="container">
-    <srm-form
-      v-model="detailForm"
-      form-name="detailForm"
-      :rules="rules"
-      :reset-msg="false"
-      :form-items="formItems"
-      :inline="false"
-      @submit="submit"
-      class="my-form"
-    ></srm-form>
+    <srm-form v-model="detailForm" form-name="detailForm" :rules="rules" :reset-msg="false" :form-items="formItems" :inline="false" @submit="submit" class="my-form"></srm-form>
   </div>
 </template>
 <script>
@@ -31,12 +22,12 @@ export default {
         img: [{ required: true, message: '请上传封面', trigger: 'click' }]
       },
       detailForm: {
-        title: null,
-        url: null,
-        state: null,
-        label: null,
-        isTop: null,
-        img: null
+        title: '',
+        url: '',
+        state: '',
+        label: '',
+        isTop: '',
+        img: ''
       },
       formItems: [
         {
@@ -126,16 +117,22 @@ export default {
   },
   methods: {
     async getDetail() {
-      const { code, data } = await fetchArticle({ articleId: this.id });
+      const { code, data } = await fetchArticle({ id: this.id });
       if (code === 0) {
-        Object.assign(this.detailForm, {
-          title: data.title,
-          url: data.url,
-          state: parseInt(data.state),
-          label: data.label.split(','),
-          isTop: data.isTop ? true : false,
-          img: data.img1
-        });
+        // Object.assign(this.detailForm, {
+        //   title: data.title,
+        //   url: data.url,
+        //   state: parseInt(data.state),
+        //   label: data.label.split(','),
+        //   isTop: data.isTop ? true : false,
+        //   img: data.img1
+        // });
+        this.$set(this.detailForm, 'title', data.title);
+        this.$set(this.detailForm,'url',data.url)
+        this.$set(this.detailForm,'state',parseInt(data.state))
+        this.$set(this.detailForm,'label',data.label.split(','))
+        this.$set(this.detailForm,'isTop',data.isTop ? true : false)
+        this.$set(this.detailForm,'img',data.img1)
       } else {
         this.$router.back();
       }
