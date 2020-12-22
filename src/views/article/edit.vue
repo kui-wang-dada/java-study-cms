@@ -30,7 +30,14 @@ export default {
         label: [{ required: true, message: '请选择标签', trigger: 'click' }],
         img: [{ required: true, message: '请上传封面', trigger: 'click' }]
       },
-      detailForm: {},
+      detailForm: {
+        title: null,
+        url: null,
+        state: null,
+        label: null,
+        isTop: null,
+        img: null
+      },
       formItems: [
         {
           tag: 'input',
@@ -106,21 +113,29 @@ export default {
     }
   },
   mounted() {
-    this.id = (this.$route.params && this.$route.params.id) || null;
-    if (this.id) {
-      this.getDetail();
-    }
-
     // label文章标签
     getLabel().then(res => {
       this.formItems[3].attrs.options = res;
     });
+
+    // 修改or添加
+    this.id = (this.$route.params && this.$route.params.id) || null;
+    if (this.id) {
+      this.getDetail();
+    }
   },
   methods: {
     async getDetail() {
-      const { code, data } = await fetchArticle(this.id);
-      if (code === 20000) {
-        Object.assign(this.detailForm, data);
+      const { code, data } = await fetchArticle({ articleId: this.id });
+      if (code === 0) {
+        Object.assign(this.detailForm, {
+          title: data.title,
+          url: data.url,
+          state: parseInt(data.state),
+          label: data.label.split(','),
+          isTop: data.isTop ? true : false,
+          img: data.img1
+        });
       } else {
         this.$router.back();
       }
@@ -129,13 +144,10 @@ export default {
       const data = Object.assign({}, this.detailForm);
       data.label = data.label.join(',');
       data.isTop = data.isTop ? 1 : 0;
-      console.log(data);
-      // return;
-      // if (this.id) {
-      //   data.id = this.id;
-      //   msg = '创建文章成功';
-      // }
-      const { code ,msg} = await this.submitFn(data);
+      if (this.id) {
+        data.id = this.id;
+      }
+      const { code, msg } = await this.submitFn(data);
       if (code === 0) {
         this.$message.success(msg);
         this.goListWithRefresh('/article/list');

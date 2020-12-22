@@ -23,13 +23,7 @@
       @changePage="changePage"
       @changeSize="changeSize"
     >
-      <el-button
-        slot="buttons"
-        type="success"
-        icon="el-icon-plus"
-        @click="setItem({}, 'create')"
-        >新增</el-button
-      >
+      <el-button slot="buttons" type="success" icon="el-icon-plus" @click="setItem({}, 'create')">新增</el-button>
       <el-table-column slot="operation" label="操作" width="180" align="center">
         <template slot-scope="scope">
           <el-button type="text" @click="setItem(scope.row, 'delete')">
@@ -44,79 +38,75 @@
         </template>
       </el-table-column>
     </srm-table>
-    <srm-dialog-check
-      content="确认删除该文章吗？"
-      :current-item.sync="checkDialogItem"
-      @confirmItem="deleteItem"
-    />
+    <srm-dialog-check content="确认删除该文章吗？" :current-item.sync="checkDialogItem" @confirmItem="deleteItem" />
   </div>
 </template>
 <script>
-import { fetchList, deleteArticle } from "@/api/article";
-import { statusMap } from "assets/data-maps";
+import { fetchList, deleteArticle } from '@/api/article';
+import { statusMap } from 'assets/data-maps';
 import { formatTimer } from '@/utils';
-import pageMixin from "@/mixins/pageMixin";
+import pageMixin from '@/mixins/pageMixin';
 export default {
-  name: "ArticleList",
+  name: 'ArticleList',
   mixins: [pageMixin],
   data() {
     return {
       fetchList,
       deleteVisible: false,
       columns: [
-        { type: "index", label: "序号", width: 50 },
+        { type: 'index', label: '序号', width: 50 },
         {
-          prop: "title",
-          label: "标题",
-          "show-overflow-tooltip": true,
+          prop: 'title',
+          label: '标题',
+          'show-overflow-tooltip': true,
           width: 300
         },
-        { prop: "img1", label: "封面", isImg: true, width: 120 },
+        { prop: 'img1', label: '封面', isImg: true, width: 120 },
         {
-          prop: "url",
-          label: "链接",
+          prop: 'url',
+          label: '链接',
           width: 300,
           isLink: true
         },
         {
-          prop: "state",
-          label: "当前状态",
+          prop: 'state',
+          label: '当前状态',
           isTag: true,
           width: 100
         },
         {
-          prop: "labelList",
-          label: "标签",
+          prop: 'labelList',
+          label: '标签',
           isLabel: true,
           width: 200
         },
-        { 
-          prop: "createTime",
-           label: "发布时间", 
-           formatter: this.createTimeFormat,
-           width: 200
+        {
+          prop: 'createTime',
+          label: '发布时间',
+          formatter: this.createTimeFormat,
+          width: 200
         },
         // 没有prop的列不会被导出
-        { slot: "operation", label: "操作" }
+        { slot: 'operation', label: '操作' }
       ],
       queryColumns: [
         {
-          tag: "input",
+          tag: 'input',
           itemAttrs: {
-            label: "文章标题"
+            label: '文章标题'
           },
           attrs: {
-            key: "title",
-            placeholder: "请输入文章标题"
+            key: 'title',
+            placeholder: '请输入文章标题'
           }
         },
         {
-          tag: "select",
+          tag: 'select',
           itemAttrs: {
-            label: "文章状态"
+            label: '文章状态'
           },
           attrs: {
-            key: "state",
+            key: 'state',
             options: statusMap
           }
         }
@@ -129,22 +119,22 @@ export default {
     },
     setItem(item, type) {
       switch (type) {
-        case "delete":
+        case 'delete':
           this.checkDialogItem = item;
           break;
-        case "detail":
+        case 'detail':
           this.$router.push({
-            name: "ArticleDetail",
+            name: 'ArticleDetail',
             params: {
               id: item.id
             }
           });
           break;
-        case "edit":
+        case 'edit':
           this.$router.push(`/article/edit/${item.id}`);
           break;
-        case "create":
-          this.$router.push("/article/create");
+        case 'create':
+          this.$router.push('/article/create');
           break;
         default:
           break;

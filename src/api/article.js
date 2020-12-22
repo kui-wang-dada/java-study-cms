@@ -1,49 +1,41 @@
-import request from "@/utils/request";
+import request from '@/utils/request';
 
 export function fetchList(query) {
   return request({
-    url: "/article/home/selectArticleHome",
-    method: "get",
+    url: '/article/home/selectArticleHome',
+    method: 'get',
     params: query
   });
 }
 
-export function fetchArticle(id) {
+export function fetchArticle(data) {
   return request({
-    url: "/article/detail",
-    method: "get",
-    params: { id }
+    url: '/article/home/selectArticleHomeById',
+    method: 'post',
+    data
   });
 }
 
-// export function createArticle(data) {
-//   return request({
-//     url: '/article/create',
-//     method: 'post',
-//     data
-//   })
-// }
-
 export function createArticle(data) {
   return request({
-    url: "/article/home/insertArticleHome",
-    method: "post",
+    url: '/article/home/insertArticleHome',
+    method: 'post',
     data
   });
 }
 
 export function updateArticle(data) {
   return request({
-    url: "/article/update",
-    method: "post",
+    url: '/article/home/updateArticleHome',
+    method: 'post',
     data
   });
 }
 
 export function deleteArticle(query) {
   return request({
-    url: "/article/home/deleteArticleHome",
-    method: "post",
+    url: '/article/home/deleteArticleHome',
+    method: 'post',
     data: {
       articleId: query.id
     }

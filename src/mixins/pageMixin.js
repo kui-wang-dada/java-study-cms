@@ -66,10 +66,6 @@ export default {
         this.tableData = Array.isArray(response.data) ? response.data : response.data.list;
         this.total = 10;
         this.listLoading = false;
-        // this.tableData.forEach(item => {
-        //   item.label = ['前端', 'React', 'Vue'];
-        // });
-        console.log(this.tableData, 'cc');
       });
     },
     /**
