@@ -1,11 +1,19 @@
 <template>
   <div class="container">
-    <srm-form v-model="detailForm" form-name="detailForm" :rules="rules" :reset-msg="false" :form-items="formItems" :inline="false" @submit="submit" class="my-form"></srm-form>
+    <srm-form
+      v-model="detailForm"
+      form-name="detailForm"
+      :rules="rules"
+      :reset-msg="false"
+      :form-items="formItems"
+      :inline="false"
+      @submit="submit"
+      class="my-form"
+    ></srm-form>
   </div>
 </template>
 <script>
 import { fetchArticle, updateArticle, createArticle } from 'api/article';
-import { fetchList } from '@/api/label';
 import { statusMap, getLabel } from 'assets/data-maps';
 import detailMixin from '@/mixins/detailMixin';
 export default {
@@ -128,11 +136,11 @@ export default {
         //   img: data.img1
         // });
         this.$set(this.detailForm, 'title', data.title);
-        this.$set(this.detailForm,'url',data.url)
-        this.$set(this.detailForm,'state',parseInt(data.state))
-        this.$set(this.detailForm,'label',data.label.split(','))
-        this.$set(this.detailForm,'isTop',data.isTop ? true : false)
-        this.$set(this.detailForm,'img',data.img1)
+        this.$set(this.detailForm, 'url', data.url);
+        this.$set(this.detailForm, 'state', parseInt(data.state));
+        this.$set(this.detailForm, 'label', data.label.split(','));
+        this.$set(this.detailForm, 'isTop', parseInt(data.isTop) ? true : false);
+        this.$set(this.detailForm, 'img', data.img1);
       } else {
         this.$router.back();
       }

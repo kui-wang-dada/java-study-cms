@@ -58,6 +58,13 @@
           </template>
         </el-table-column>
 
+        <!-- switch -->
+        <el-table-column v-else-if="column.isSwitch" :key="column.prop" v-bind="setAttrs(column)">
+          <template slot-scope="scope">
+            <el-switch :value="scope.row[column.prop] == 1 ? true : false" disabled></el-switch>
+          </template>
+        </el-table-column>
+
         <!-- 标签 -->
         <el-table-column v-else-if="column.isLabel" :key="column.prop" v-bind="setAttrs(column)">
           <template slot-scope="scope">

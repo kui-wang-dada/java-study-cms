@@ -81,6 +81,12 @@ export default {
           width: 200
         },
         {
+          prop: 'isTop',
+          label: '是否置顶',
+          isSwitch: true,
+          width: 100
+        },
+        {
           prop: 'createTime',
           label: '发布时间',
           formatter: this.createTimeFormat,
@@ -117,6 +123,7 @@ export default {
     createTimeFormat(row, column, cellvalue) {
       return formatTimer(cellvalue / 1000, true);
     },
+
     setItem(item, type) {
       switch (type) {
         case 'delete':
