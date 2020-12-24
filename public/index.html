@@ -3,15 +3,11 @@
   <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
-    />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
     <link rel="icon" href="<%= BASE_URL %>favicon.ico" />
     <!-- dns预解析 填写api服务器域名地址 -->
     <link rel="dns-prefetch" href="" />
-    <% if (process.env.NODE_ENV === 'production') { %> <% for(var css of
-    htmlWebpackPlugin.options.cdn.css) { %>
+    <% if (process.env.NODE_ENV === 'production') { %> <% for(var css of htmlWebpackPlugin.options.cdn.css) { %>
     <link href="<%=css%>" rel="preload" as="style" />
     <link rel="stylesheet" href="<%=css%>" as="style" />
     <% } %> <% for(var js of htmlWebpackPlugin.options.cdn.js) { %>
@@ -64,19 +60,16 @@
   </head>
   <body>
     <noscript>
-      <strong
-        >We're sorry but <%= webpackConfig.name %> doesn't work properly without
-        JavaScript enabled. Please enable it to continue.</strong
-      >
+      <strong>We're sorry but <%= webpackConfig.name %> doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
     </noscript>
     <div id="app">
       <div class="d2-home">
         <div class="d2-home__main">
-          <img
+          <!-- <img
             class="d2-home__loading"
             src="http://img.cixi518.com/ljh_logo.jpeg"
             alt="loading"
-          />
+          /> -->
           <div class="d2-home__title">
             正在加载资源
           </div>
