@@ -25,9 +25,7 @@ export default {
       rules: {
         title: [{ required: true, message: '标题不能为空', trigger: 'click' }],
         url: [{ required: true, message: '链接不能为空', trigger: 'click' }],
-        state: [{ required: true, message: '请选择状态', trigger: 'click' }],
-        downloadNumber: [{ required: true, message: '请输入下载基数', trigger: 'click' }],
-        supportNumber: [{ required: true, message: '请输入点赞基数', trigger: 'click' }]
+        state: [{ required: true, message: '请选择状态', trigger: 'click' }]
       },
       detailForm: {
         title: '',
@@ -68,28 +66,6 @@ export default {
             key: 'state',
             options: statusMap,
             placeholder: '请选择资料状态'
-          }
-        },
-        {
-          tag: 'input',
-          itemAttrs: {
-            label: '下载基数',
-            col: 18
-          },
-          attrs: {
-            key: 'downloadNumber',
-            placeholder: '请输入下载基数'
-          }
-        },
-        {
-          tag: 'input',
-          itemAttrs: {
-            label: '点赞基数',
-            col: 18
-          },
-          attrs: {
-            key: 'supportNumber',
-            placeholder: '请输入点赞基数'
           }
         }
       ]
