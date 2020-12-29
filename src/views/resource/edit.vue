@@ -13,7 +13,7 @@
   </div>
 </template>
 <script>
-import { fetchArticle, updateArticle, createArticle } from 'api/article';
+import { findArticleDownLoadById, updateArticleDownLoad, insertArticleDownLoad } from '@/api/resource';
 import { statusMap } from 'assets/data-maps';
 import detailMixin from '@/mixins/detailMixin';
 export default {
@@ -73,7 +73,7 @@ export default {
   },
   computed: {
     submitFn() {
-      return this.id ? updateArticle : createArticle;
+      return this.id ? updateArticleDownLoad : insertArticleDownLoad;
     }
   },
   mounted() {
@@ -85,37 +85,26 @@ export default {
   },
   methods: {
     async getDetail() {
-      const { code, data } = await fetchArticle({ id: this.id });
+      const { code, data } = await findArticleDownLoadById({ id: this.id });
       if (code === 0) {
-        // Object.assign(this.detailForm, {
-        //   title: data.title,
-        //   url: data.url,
-        //   state: parseInt(data.state),
-        //   label: data.label.split(','),
-        //   isTop: data.isTop ? true : false,
-        //   img: data.img1
-        // });
         this.$set(this.detailForm, 'title', data.title);
-        this.$set(this.detailForm, 'url', data.url);
+        this.$set(this.detailForm, 'url', data.articleUrl);
         this.$set(this.detailForm, 'state', parseInt(data.state));
-        this.$set(this.detailForm, 'label', data.label.split(','));
-        this.$set(this.detailForm, 'isTop', parseInt(data.isTop) ? true : false);
-        this.$set(this.detailForm, 'img', data.img1);
       } else {
         this.$router.back();
       }
     },
     async submit() {
       const data = Object.assign({}, this.detailForm);
-      data.label = data.label.join(',');
-      data.isTop = data.isTop ? 1 : 0;
       if (this.id) {
         data.id = this.id;
       }
+      data.userId = '1338689902408613888';
+      console.log(data, '----');
       const { code, msg } = await this.submitFn(data);
       if (code === 0) {
         this.$message.success(msg);
-        this.goListWithRefresh('/article/list');
+        this.goListWithRefresh('/resource/list');
       }
     }
   }

@@ -18,13 +18,13 @@ const ResourceRouter = {
       name: 'ResourceList',
       meta: { title: '资料列表' }
     },
-    // {
-    //   path: 'detail/:id',
-    //   component: () => import('@/views/article/detail'),
-    //   name: 'ArticleDetail',
-    //   meta: { title: '文章详情', noCache: true },
-    //   hidden: true
-    // },
+    {
+      path: 'detail/:id',
+      component: () => import('@/views/resource/detail'),
+      name: 'ResourceDetail',
+      meta: { title: '资料详情', noCache: true },
+      hidden: true
+    },
     {
       path: 'create',
       component: () => import('@/views/resource/edit'),

@@ -42,7 +42,7 @@
   </div>
 </template>
 <script>
-import { fetchList, deleteArticle } from '@/api/article';
+import { fetchList, deleteArticleDownLoad } from '@/api/resource';
 import { statusMap } from 'assets/data-maps';
 import { formatTimer } from '@/utils';
 import pageMixin from '@/mixins/pageMixin';
@@ -61,12 +61,11 @@ export default {
           'show-overflow-tooltip': true,
           width: 300
         },
-        { prop: 'img1', label: '封面', isImg: true, width: 120 },
         {
-          prop: 'url',
+          prop: 'articleUrl',
           label: '链接',
-          width: 300,
-          isLink: true
+          width: 300
+          // isLink: true
         },
         {
           prop: 'state',
@@ -75,22 +74,19 @@ export default {
           width: 100
         },
         {
-          prop: 'labelList',
-          label: '标签',
-          isLabel: true,
-          width: 200
+          prop: 'downloadNum',
+          label: '下载数量',
+          width: 100
         },
         {
-          prop: 'isTop',
-          label: '是否置顶',
-          isSwitch: true,
+          prop: 'inspireNum',
+          label: '点赞数量',
           width: 100
         },
         {
           prop: 'createTime',
           label: '发布时间',
-          formatter: this.createTimeFormat,
-          width: 200
+          formatter: this.createTimeFormat
         },
         // 没有prop的列不会被导出
         { slot: 'operation', label: '操作' }
@@ -99,17 +95,17 @@ export default {
         {
           tag: 'input',
           itemAttrs: {
-            label: '文章标题'
+            label: '资料标题'
           },
           attrs: {
             key: 'title',
-            placeholder: '请输入文章标题'
+            placeholder: '请输入资料标题'
           }
         },
         {
           tag: 'select',
           itemAttrs: {
-            label: '文章状态'
+            label: '资料状态'
           },
           attrs: {
             key: 'state',
@@ -131,14 +127,14 @@ export default {
           break;
         case 'detail':
           this.$router.push({
-            name: 'ArticleDetail',
+            name: 'ResourceDetail',
             params: {
               id: item.id
             }
           });
           break;
         case 'edit':
-          this.$router.push(`/article/edit/${item.id}`);
+          this.$router.push(`/resource/edit/${item.id}`);
           break;
         case 'create':
           this.$router.push('/resource/create');
@@ -154,7 +150,7 @@ export default {
       } else {
         id = item.id;
       }
-      this.mixinHandleItem(deleteArticle, this.getList, id);
+      this.mixinHandleItem(deleteArticleDownLoad, this.getList, id);
     }
   }
 };
