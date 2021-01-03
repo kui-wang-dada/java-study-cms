@@ -1,4 +1,4 @@
-import request from '@/utils/request'
+import request from '@/utils/request';
 
 // export function login(data) {
 //   console.log(data)
@@ -10,12 +10,12 @@ import request from '@/utils/request'
 // }
 
 export function login(data) {
-  console.log(data)
+  console.log(data);
   return request({
-    url: '/user/login',
+    url: '/user/login/base',
     method: 'post',
-    data 
-  })
+    data
+  });
 }
 
 export function getInfo(token) {
@@ -23,12 +23,12 @@ export function getInfo(token) {
     url: '/user/info',
     method: 'get',
     params: { token }
-  })
+  });
 }
 
 export function logout() {
   return request({
     url: '/user/logout',
     method: 'post'
-  })
+  });
 }
