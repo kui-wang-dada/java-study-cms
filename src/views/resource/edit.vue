@@ -99,7 +99,7 @@ export default {
       if (this.id) {
         data.id = this.id;
       }
-      data.userId = '1345559048920387584';
+      data.userId = '1346645862359961600';
       console.log(data, '----');
       const { code, msg } = await this.submitFn(data);
       if (code === 0) {
