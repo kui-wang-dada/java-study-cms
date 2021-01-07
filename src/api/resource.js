@@ -2,7 +2,7 @@ import request from '@/utils/request';
 
 export function fetchList(query) {
   return request({
-    url: '/article/download/selectArticleDownLoadList',
+    url: '/article/article/download/selectArticleDownLoadList',
     method: 'get',
     params: query
   });
@@ -10,7 +10,7 @@ export function fetchList(query) {
 
 export function findArticleDownLoadById(query) {
   return request({
-    url: '/article/download/findArticleDownLoadById',
+    url: '/article/article/download/findArticleDownLoadById',
     method: 'get',
     params: query
   });
@@ -18,7 +18,7 @@ export function findArticleDownLoadById(query) {
 
 export function insertArticleDownLoad(data) {
   return request({
-    url: '/article/download/insertArticleDownLoad',
+    url: '/article/article/download/insertArticleDownLoad',
     method: 'post',
     data
   });
@@ -26,7 +26,7 @@ export function insertArticleDownLoad(data) {
 
 export function updateArticleDownLoad(data) {
   return request({
-    url: '/article/download/updateArticleDownLoad',
+    url: '/article/article/download/updateArticleDownLoad',
     method: 'post',
     data
   });
@@ -34,7 +34,7 @@ export function updateArticleDownLoad(data) {
 
 export function deleteArticleDownLoad(query) {
   return request({
-    url: '/article/download/deleteArticleDownLoad',
+    url: '/article/article/download/deleteArticleDownLoad',
     method: 'get',
     params: query
   });
