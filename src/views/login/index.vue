@@ -1,13 +1,6 @@
 <template>
   <div class="login-container">
-    <el-form
-      ref="loginForm"
-      :model="loginForm"
-      :rules="loginRules"
-      class="login-form"
-      auto-complete="on"
-      label-position="left"
-    >
+    <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left">
       <div class="title-container">
         <h3 class="title">Login Form</h3>
       </div>
@@ -16,15 +9,7 @@
         <span class="svg-container">
           <svg-icon icon-class="user" />
         </span>
-        <el-input
-          ref="username"
-          v-model="loginForm.username"
-          placeholder="Username"
-          name="username"
-          type="text"
-          tabindex="1"
-          auto-complete="on"
-        />
+        <el-input ref="username" v-model="loginForm.username" placeholder="Username" name="username" type="text" tabindex="1" auto-complete="on" />
       </el-form-item>
 
       <el-form-item prop="password">
@@ -43,23 +28,15 @@
           @keyup.enter.native="handleLogin"
         />
         <span class="show-pwd" @click="showPwd">
-          <svg-icon
-            :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'"
-          />
+          <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
         </span>
       </el-form-item>
 
-      <el-button
-        :loading="loading"
-        type="primary"
-        style="width:100%;margin-bottom:30px;"
-        @click.native.prevent="handleLogin"
-        >Login</el-button
-      >
+      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">Login</el-button>
 
       <div class="tips">
         <span style="margin-right:20px;">username: admin</span>
-        <span> password: any</span>
+        <span>password: any</span>
       </div>
     </el-form>
   </div>
@@ -69,37 +46,33 @@
 // import { validUsername } from '@/utils/validate'
 
 export default {
-  name: "Login",
+  name: 'Login',
   data() {
     const validateUsername = (rule, value, callback) => {
       if (!value) {
-        callback(new Error("请输入正确的用户名"));
+        callback(new Error('请输入正确的用户名'));
       } else {
         callback();
       }
     };
     const validatePassword = (rule, value, callback) => {
       if (value.length < 2) {
-        callback(new Error("密码不能小于6位"));
+        callback(new Error('密码不能小于6位'));
       } else {
         callback();
       }
     };
     return {
       loginForm: {
-        username: "123",
-        password: "123"
+        username: '123',
+        password: '123'
       },
       loginRules: {
-        username: [
-          { required: true, trigger: "blur", validator: validateUsername }
-        ],
-        password: [
-          { required: true, trigger: "blur", validator: validatePassword }
-        ]
+        username: [{ required: true, trigger: 'blur', validator: validateUsername }],
+        password: [{ required: true, trigger: 'blur', validator: validatePassword }]
       },
       loading: false,
-      passwordType: "password",
+      passwordType: 'password',
       redirect: undefined
     };
   },
@@ -113,10 +86,10 @@ export default {
   },
   methods: {
     showPwd() {
-      if (this.passwordType === "password") {
-        this.passwordType = "";
+      if (this.passwordType === 'password') {
+        this.passwordType = '';
       } else {
-        this.passwordType = "password";
+        this.passwordType = 'password';
       }
       this.$nextTick(() => {
         this.$refs.password.focus();
@@ -125,18 +98,22 @@ export default {
     handleLogin() {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
+          let data = {
+            userName: this.loginForm.username,
+            password: this.loginForm.password
+          };
           this.loading = true;
           this.$store
-            .dispatch("user/login", this.loginForm)
+            .dispatch('user/login', data)
             .then(() => {
-              this.$router.push({ path: this.redirect || "/" });
+              this.$router.push({ path: this.redirect || '/' });
               this.loading = false;
             })
             .catch(() => {
               this.loading = false;
             });
         } else {
-          console.log("error submit!!");
+          console.log('error submit!!');
           return false;
         }
       });
