@@ -103,7 +103,8 @@ module.exports = {
         utils: resolve('src/utils'),
         assets: resolve('src/assets')
       }
-    }
+    },
+    devtool: 'source-map'
   },
   chainWebpack(config) {
     config.plugins.delete('preload'); // TODO: need test

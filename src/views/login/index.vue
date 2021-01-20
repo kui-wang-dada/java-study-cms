@@ -5,11 +5,11 @@
         <h3 class="title">Login Form</h3>
       </div>
 
-      <el-form-item prop="username">
+      <el-form-item prop="userName">
         <span class="svg-container">
           <svg-icon icon-class="user" />
         </span>
-        <el-input ref="username" v-model="loginForm.username" placeholder="Username" name="username" type="text" tabindex="1" auto-complete="on" />
+        <el-input ref="userName" v-model="loginForm.userName" placeholder="Username" name="username" type="text" tabindex="1" auto-complete="on" />
       </el-form-item>
 
       <el-form-item prop="password">
@@ -64,11 +64,11 @@ export default {
     };
     return {
       loginForm: {
-        username: '123',
-        password: '123'
+        userName: 'admin',
+        password: '1234'
       },
       loginRules: {
-        username: [{ required: true, trigger: 'blur', validator: validateUsername }],
+        userName: [{ required: true, trigger: 'blur', validator: validateUsername }],
         password: [{ required: true, trigger: 'blur', validator: validatePassword }]
       },
       loading: false,
@@ -98,13 +98,9 @@ export default {
     handleLogin() {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
-          let data = {
-            userName: this.loginForm.username,
-            password: this.loginForm.password
-          };
           this.loading = true;
           this.$store
-            .dispatch('user/login', data)
+            .dispatch('user/login', this.loginForm)
             .then(() => {
               this.$router.push({ path: this.redirect || '/' });
               this.loading = false;
