@@ -20,9 +20,9 @@ export function login(data) {
 
 export function getInfo(token) {
   return request({
-    url: '/user/user/login/findUserByToken',
-    method: 'get',
-    params: { token }
+    url: '/user/user/login/findInfoByToken',
+    method: 'post',
+    data: { token }
   });
 }
 
