@@ -2,7 +2,7 @@ import request from '@/utils/request';
 
 export function fetchList(query) {
   return request({
-    url: '/article/home/selectArticleHome',
+    url: '/article/article/home/selectArticleHome',
     method: 'get',
     params: query
   });
@@ -10,7 +10,7 @@ export function fetchList(query) {
 
 export function fetchArticle(query) {
   return request({
-    url: '/article/home/selectArticleHomeById',
+    url: '/article/article/home/selectArticleHomeById',
     method: 'get',
     params: query
   });
@@ -18,7 +18,7 @@ export function fetchArticle(query) {
 
 export function createArticle(data) {
   return request({
-    url: '/article/home/insertArticleHome',
+    url: '/article/article/home/insertArticleHome',
     method: 'post',
     data
   });
@@ -26,7 +26,7 @@ export function createArticle(data) {
 
 export function updateArticle(data) {
   return request({
-    url: '/article/home/updateArticleHome',
+    url: '/article/article/home/updateArticleHome',
     method: 'post',
     data
   });
@@ -34,7 +34,7 @@ export function updateArticle(data) {
 
 export function deleteArticle(query) {
   return request({
-    url: '/article/home/deleteArticleHome',
+    url: '/article/article/home/deleteArticleHome',
     method: 'get',
     params: query
   });

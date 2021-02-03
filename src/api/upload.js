@@ -1,8 +1,14 @@
 import request from '@/utils/request';
-export const uploadAction = process.env.VUE_APP_BASE_API + '/article/home/imgUpload';
-export function upload() {
+export const uploadAction = process.env.VUE_APP_BASE_API + '/article/article/home/imgUpload';
+request.headers = {
+  'Content-Type': 'multipart/form-data'
+};
+console.log(request);
+export function upload(formdata) {
   return request({
-    url: '/article/home/imgUpload',
-    method: 'post'
+    url: '/article/article/home/imgUpload',
+    method: 'post',
+    data: formdata,
+    headers: { 'Content-Type': 'multipart/form-data' }
   });
 }

@@ -22,6 +22,20 @@ import SrmTable from '@/components/SrmTable';
 import SrmForm from '@/components/SrmForm';
 import SrmDialogCheck from '@/components/SrmDialogCheck';
 
+// mavonEditor
+import mavonEditor from 'mavon-editor';
+import 'mavon-editor/dist/css/index.css';
+Vue.use(mavonEditor);
+
+//引入axios
+import axios from 'axios';
+
+//定义$axios（可以不写，在组件中直接使用axios）
+Vue.prototype.$axios = axios;
+
+//Vue对象使用axios
+Vue.use(axios);
+
 /**
  * If you don't want to use mock-server
  * you want to use MockJs for mock api
