@@ -39,3 +39,12 @@ export function deleteArticleDownLoad(query) {
     params: query
   });
 }
+
+// 获取目录
+export function getSelectCategory(query) {
+  return request({
+    url: '/article/article/learn/selectCategory',
+    method: 'get',
+    params: query
+  });
+}

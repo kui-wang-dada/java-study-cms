@@ -41,7 +41,7 @@
         </span>
       </el-tree>
       <!--鼠标右键点击出现页面-->
-      <div v-show="menuVisible">
+      <div v-show="menuVisible" class="menu-block">
         <el-menu id="rightClickMenu" class="el-menu-vertical" @select="handleRightSelect" active-text-color="#fff" text-color="#fff">
           <el-menu-item index="1" class="menuItem">
             <span slot="title">
@@ -65,19 +65,6 @@
       </div>
     </div>
 
-    <!-- <div id="main">
-      <mavon-editor
-        v-model="value"
-        :ishljs="true"
-        :codeStyle="code_style"
-        :boxShadow="false"
-        ref="md"
-        @imgAdd="handleEditorImgAdd"
-        @imgDel="handleEditorImgDel"
-        @save="handleSaveContent"
-      />
-    </div> -->
-
     <el-dialog title="提示" :visible.sync="dialogVisible" width="80%">
       <mavon-editor
         class="md"
@@ -99,7 +86,7 @@
   </div>
 </template>
 <script>
-import { findArticleDownLoadById, updateArticleDownLoad, insertArticleDownLoad } from '@/api/resource';
+import { getSelectCategory } from '@/api/study';
 import { statusMap } from 'assets/data-maps';
 import detailMixin from '@/mixins/detailMixin';
 import { uploadAction } from 'api/upload';
@@ -280,51 +267,20 @@ export default {
     }
   },
   mounted() {
-    let Arry = [
-      {
-        children: [{ status: 1, name: '儿子1' }, { status: 1, name: '儿子2' }],
-        status: 1,
-        name: '爹1'
-      },
-      {
-        children: [{ status: 2, name: '儿子3' }, { status: 1, name: '儿子4' }],
-        status: 1,
-        name: '爹2'
-      },
-      {
-        children: [{ status: 1, name: '儿子5' }],
-        status: 2,
-        name: '爹3'
-      },
-      { status: 1, name: '爹4' },
-      { status: 2, name: '爹5' }
-    ];
-
-    Arry.forEach(item => {
-      if (item.children && item.children.length > 0) {
-        item.children = item.children.filter(e => e.status !== 1);
-      }
-    });
-
-    let newArry = Arry.filter(item => {
-      return item.status !== 1 || (item.status === 1 && (item.children && item.children.length > 0));
-    });
-
-    let arr = Arry.map(item => {
-      if (item.status == 1) {
-        item.disabled = true;
-      }
-      return;
-    });
-
-    console.log(newArry);
     // 修改or添加
     this.id = (this.$route.params && this.$route.params.id) || null;
     if (this.id) {
-      this.getDetail();
+      // this.getDetail();
     }
+    this.getSelectCategory();
   },
   methods: {
+    async getSelectCategory() {
+      const res = await getSelectCategory();
+      this.setTree = res.data;
+      console.log(res.data);
+    },
+
     // 绑定@imgAdd event
     handleEditorImgAdd(pos, $file) {
       // 第一步.将图片上传到服务器.
@@ -465,6 +421,7 @@ export default {
     },
 
     rihgtClick(event, object, value, element) {
+      console.log(event);
       if (this.objectID !== object.id) {
         this.objectID = object.id;
         this.menuVisible = true;
@@ -483,6 +440,7 @@ export default {
       menu.style.top = event.clientY + 10 + 'px';
       menu.style.position = 'absolute'; // 为新创建的DIV指定绝对定位
       menu.style.width = 140 + 'px';
+      console.log(event.clientX + 10);
       /*console.log("右键被点击的左侧:",menu.style.left);
         console.log("右键被点击的顶部:",menu.style.top);*/
       //        console.log("右键被点击的event:",event);
@@ -511,6 +469,19 @@ export default {
     width: 650px;
   }
 }
+
+.tree-block {
+  position: relative;
+  width: 300px;
+  height: 100%;
+  background-color: #d2cfcf;
+}
+
+.menu-block {
+  height: 100%;
+  position: relative;
+}
+
 /*************************标签鼠标右击页面样式******************************/
 .el-menu-vertical {
   width: 200px;
@@ -518,7 +489,7 @@ export default {
   z-index: 100;
   background-color: white;
   padding: 10px 0;
-  box-shadow: 0px 5px 5px -3px rgb(0, 0, 0 / 20%), 0px 8px 10px 1px rgb(0, 0, 0 / 14%), 0px 3px 14px 2px rgb(0, 0, 0 / 12%);
+  box-shadow: 0 8px 12px #e1e2e4;
 }
 
 .menuItem {

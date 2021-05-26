@@ -36,7 +36,7 @@
 
       <div class="tips">
         <span style="margin-right:20px;">username: admin</span>
-        <span>password: any</span>
+        <span>password: 1234</span>
       </div>
     </el-form>
   </div>
