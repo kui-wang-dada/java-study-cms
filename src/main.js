@@ -33,9 +33,6 @@ import axios from 'axios';
 //定义$axios（可以不写，在组件中直接使用axios）
 Vue.prototype.$axios = axios;
 
-//Vue对象使用axios
-Vue.use(axios);
-
 /**
  * If you don't want to use mock-server
  * you want to use MockJs for mock api

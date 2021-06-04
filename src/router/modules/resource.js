@@ -2,7 +2,7 @@
 
 import Layout from '@/layout';
 
-const ResourceRouter = {
+const resourceRouter = {
   path: '/resource',
   component: Layout,
   redirect: '/resource/list',
@@ -41,4 +41,4 @@ const ResourceRouter = {
     }
   ]
 };
-export default ResourceRouter;
+export default resourceRouter;

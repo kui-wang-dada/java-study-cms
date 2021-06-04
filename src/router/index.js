@@ -82,16 +82,21 @@ export const asyncRoutes = [
   { path: '*', redirect: '/404', hidden: true }
 ];
 
-console.log(constantRoutes.concat(asyncRoutes), 'aa');
+// console.log(constantRoutes.concat(asyncRoutes), '拼接异步路由数组');
 
 const createRouter = () =>
   new Router({
     // mode: 'history', // require service support
     scrollBehavior: () => ({ y: 0 }),
-    routes: constantRoutes.concat(asyncRoutes)
+    routes: constantRoutes
   });
 
 const router = createRouter();
+
+Router.$addRoutes = params => {
+  router.matcher = new Router().matcher;
+  router.addRoutes(params);
+};
 
 // Detail see: https://github.com/vuejs/vue-router/issues/1234#issuecomment-357941465
 export function resetRouter() {

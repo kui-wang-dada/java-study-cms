@@ -1,5 +1,8 @@
 <template>
   <div class="container">
+    <div class="top-block">
+      <el-button slot="buttons" type="success" icon="el-icon-plus" @click="handleAddTop">添加顶级节点</el-button>
+    </div>
     <div class="tree-block">
       <el-tree
         :data="setTree"
@@ -7,7 +10,9 @@
         node-key="id"
         ref="SlotMenuList"
         :filter-node-method="filterNode"
-        @node-contextmenu="rihgtClick"
+        :default-expanded-keys="defaultExpanded"
+        @node-contextmenu="handleMouseRightClick"
+        @node-click="handleNodeClick"
         accordion
       >
         <span class="slot-t-node" slot-scope="{ node, data }">
@@ -22,7 +27,7 @@
               <span class="el-tree-node__content__label" :class="[data.id >= maxexpandId ? 'slot-t-node--label' : '']">{{ node.label }}</span>
             </span>
             <span v-show="!data.children || data.children.length == 0">
-              <i class="" style="margin-right: 10px"></i>
+              <!-- <i class="" style="margin-right: 10px"></i> -->
               <span class="el-tree-node__content__label" :class="[data.id >= maxexpandId ? 'slot-t-node--label' : '']">{{ node.label }}</span>
             </span>
           </span>
@@ -34,35 +39,41 @@
               autofocus
               v-model="data.name"
               :ref="'slotTreeInput' + data.id"
-              @blur.stop="NodeBlur(node, data)"
-              @keyup.enter.native="NodeBlur(node, data)"
+              @blur.stop="nodeBlur(node, data)"
+              @keyup.enter.native="nodeBlur(node, data)"
             ></el-input>
           </span>
         </span>
       </el-tree>
+
       <!--鼠标右键点击出现页面-->
-      <div v-show="menuVisible" class="menu-block">
-        <el-menu id="rightClickMenu" class="el-menu-vertical" @select="handleRightSelect" active-text-color="#fff" text-color="#fff">
-          <el-menu-item index="1" class="menuItem">
-            <span slot="title">
-              <i class="el-icon-plus"></i>
-              <span>添加分类</span>
-            </span>
-          </el-menu-item>
-          <el-menu-item index="2" class="menuItem">
-            <span slot="title">
-              <i class="el-icon-edit"></i>
-              <span>修改分类</span>
-            </span>
-          </el-menu-item>
-          <el-menu-item index="3" class="menuItem">
-            <span slot="title">
-              <i class="el-icon-delete"></i>
-              <span>删除分类</span>
-            </span>
-          </el-menu-item>
-        </el-menu>
-      </div>
+      <el-menu
+        v-show="menuVisible"
+        id="rightClickMenu"
+        class="el-menu-vertical"
+        @select="handleRightSelect"
+        active-text-color="#fff"
+        text-color="#fff"
+      >
+        <el-menu-item index="1" class="menuItem">
+          <span slot="title">
+            <i class="el-icon-plus"></i>
+            <span>添加分类</span>
+          </span>
+        </el-menu-item>
+        <el-menu-item index="2" class="menuItem">
+          <span slot="title">
+            <i class="el-icon-edit"></i>
+            <span>修改分类</span>
+          </span>
+        </el-menu-item>
+        <el-menu-item index="3" class="menuItem">
+          <span slot="title">
+            <i class="el-icon-delete"></i>
+            <span>删除分类</span>
+          </span>
+        </el-menu-item>
+      </el-menu>
     </div>
 
     <el-dialog title="提示" :visible.sync="dialogVisible" width="80%">
@@ -86,7 +97,7 @@
   </div>
 </template>
 <script>
-import { getSelectCategory } from '@/api/study';
+import { getSelectCategory, insertCategory, deleteCategory } from '@/api/study';
 import { statusMap } from 'assets/data-maps';
 import detailMixin from '@/mixins/detailMixin';
 import { uploadAction } from 'api/upload';
@@ -111,144 +122,13 @@ export default {
       maxexpandId: 95, //新增节点开始id
       non_maxexpandId: 95, //新增节点开始id(不更改)
       isLoadingTree: true, //是否加载节点树
-      setTree: [
-        {
-          id: 1,
-          name: 'Java基础',
-          ProSort: 1,
-          remark: 'Java基础',
-          pid: '',
-          isEdit: false,
-          children: [
-            {
-              id: 35,
-              name: 'Java开发环境基本配置',
-              pid: 1,
-              remark: '',
-              isEdit: false,
-              children: []
-            },
-            {
-              id: 36,
-              name: '熟练使用IDEA开发工具',
-              pid: 1,
-              remark: '',
-              isEdit: false,
-              children: []
-            },
-            {
-              id: 37,
-              name: '常用类String、ArrayList等的使用',
-              pid: 1,
-              remark: '',
-              isEdit: false,
-              children: []
-            },
-            {
-              id: 38,
-              name: '深入理解Java面向对象相关知识点',
-              pid: 1,
-              remark: '',
-              isEdit: false,
-              children: []
-            },
-            {
-              id: 39,
-              name: '运算符、表达式、流程控制语句、数组等的使用',
-              pid: 1,
-              remark: '',
-              isEdit: false,
-              children: []
-            },
-            {
-              id: 40,
-              name: 'Java基本面向对象知识',
-              pid: 1,
-              remark: '',
-              isEdit: false,
-              children: []
-            },
-            {
-              id: 41,
-              name: 'Java异常处理机制，熟悉Java多线程开发',
-              pid: 1,
-              remark: '',
-              isEdit: false,
-              children: []
-            },
-            {
-              id: 42,
-              name: '熟悉Java11新特性，如Lambda、Stream流等操作',
-              pid: 1,
-              remark: '',
-              isEdit: false,
-              children: []
-            }
-          ]
-        },
-        {
-          id: 2,
-          name: 'JavaWeb',
-          ProSort: 2,
-          remark: 'JavaWeb',
-          pid: '',
-          isEdit: false,
-          children: [
-            {
-              id: 43,
-              name: 'JavaJDBC、连接池操作',
-              pid: 2,
-              remark: '',
-              isEdit: false,
-              children: []
-            },
-            {
-              id: 44,
-              name: '熟练操作MySQL数据库',
-              pid: 2,
-              remark: '',
-              isEdit: false,
-              children: []
-            },
-            {
-              id: 45,
-              name: '熟悉Web开发中常用知识如HTML5、CSS3',
-              pid: 2,
-              remark: '',
-              isEdit: false,
-              children: []
-            },
-            {
-              id: 46,
-              name: 'JavaWeb开发核心技术Servlet、Listener',
-              pid: 2,
-              remark: '',
-              isEdit: false,
-              children: []
-            },
-            {
-              id: 47,
-              name: '熟悉Web开发中常用知识如HTML5、CSS3',
-              pid: 2,
-              remark: '',
-              isEdit: false,
-              children: []
-            },
-            {
-              id: 48,
-              name: '熟悉Linux服务器，并安装开发常用软件Tomcat、MySQL、Nginx等',
-              pid: 2,
-              remark: '',
-              isEdit: false,
-              children: []
-            }
-          ]
-        }
-      ], //节点树数据
+      setTree: [], // 树形结构数据
       defaultProps: {
         children: 'children',
         label: 'name'
       },
+      defaultExpanded: [], // 默认展开的节点
+
       filterText: '',
       input: '',
       input2: '',
@@ -277,8 +157,32 @@ export default {
   methods: {
     async getSelectCategory() {
       const res = await getSelectCategory();
-      this.setTree = res.data;
-      console.log(res.data);
+      const treeData = this.handleTreeData(res.data);
+      this.setTree = treeData;
+      console.log(treeData);
+    },
+
+    // 处理数据
+    handleTreeData(list) {
+      let tree = list.map(item => {
+        let isChildren = item.children && item.children.length > 0;
+        return {
+          id: item.id,
+          name: item.name,
+          ProSort: item.proSort,
+          remark: item.remark,
+          pid: item.pid,
+          isEdit: item.edit,
+          children: isChildren ? this.handleTreeData(item.children) : [],
+          codes: item.codes
+        };
+      });
+      return tree;
+    },
+
+    // 点击节点事件
+    handleNodeClick() {
+      this.menuVisible = false;
     },
 
     // 绑定@imgAdd event
@@ -305,8 +209,6 @@ export default {
     },
 
     handleSaveContent(value, render) {
-      console.log(value);
-      console.log(render);
       this.webDataString = render;
       this.dialogVisible = true;
     },
@@ -318,95 +220,115 @@ export default {
       return data.label.indexOf(value) !== -1;
     },
 
+    // 点击menu菜单
     handleRightSelect(key) {
-      console.log(key);
       if (key == 1) {
-        this.NodeAdd(this.NODE, this.DATA);
+        this.nodeAdd(this.NODE, this.DATA);
         this.menuVisible = false;
       } else if (key == 2) {
-        this.NodeEdit(this.NODE, this.DATA);
+        this.nodeEdit(this.NODE, this.DATA);
         this.menuVisible = false;
       } else if (key == 3) {
-        this.NodeDel(this.NODE, this.DATA);
+        this.nodeDel(this.NODE, this.DATA);
         this.menuVisible = false;
       }
     },
 
-    // handleAddTop(){//添加顶级节点
-    // 	this.setTree.push({
-    // 		id: ++this.maxexpandId,
-    // 		name: '新增顶级节点',
-    // 		pid: '',
-    // 		children: []
-    // 	})
-    // },
+    //添加顶级节点
+    async handleAddTop() {
+      const proSortArr = this.setTree.map(item => Number(item.ProSort));
+      let maxProSort = Math.max(...proSortArr);
 
-    NodeBlur(n, d) {
-      //输入框失焦
-      console.log(n, d);
+      // 请求添加
+      let params = {
+        isEdit: false,
+        name: '新增顶级节点',
+        pid: 0,
+        proSort: ++maxProSort
+      };
+      const { code } = await insertCategory(params);
+      if (code === 0) {
+        this.getSelectCategory();
+      }
+    },
+
+    //输入框失焦
+    async nodeBlur(n, d) {
       if (n.isEdit) {
         this.$set(n, 'isEdit', false);
+
+        // 有id就请求修改
+        if (d.id) {
+          let params = {
+            name: d.name,
+            id: d.id,
+            pid: d.pid
+          };
+          await insertCategory(params);
+        }
       }
+
       this.$nextTick(() => {
         this.$refs['slotTreeInput' + d.id].$refs.input.focus();
       });
     },
 
-    NodeEdit(n, d) {
-      //编辑节点
-      console.log(n, d);
+    //编辑节点
+    nodeEdit(n, d) {
       if (!n.isEdit) {
-        //检测isEdit是否存在or是否为false
         this.$set(n, 'isEdit', true);
+
+        // 获取当前节点焦点
+        this.$nextTick(() => {
+          this.$refs['slotTreeInput' + d.id].$refs.input.focus();
+        });
       }
     },
 
-    NodeDel(n, d) {
-      //删除节点
-      console.log(n, d);
-      let that = this;
+    //删除节点
+    nodeDel(n, d) {
+      // 判断是否有子节点
       if (d.children && d.children.length !== 0) {
         this.$message.error('此节点有子级，不可删除！');
-        return false;
-      } else {
-        //新增节点可直接删除，已存在的节点要二次确认
-        //删除操作
-        let DelFun = () => {
-          let _list = n.parent.data.children || n.parent.data; //节点同级数据
-          let _index = _list.map(c => c.id).indexOf(d.id);
-          console.log(_index);
-          _list.splice(_index, 1);
-          this.$message.success('删除成功！');
-        };
-
-        //二次确认
-        let ConfirmFun = () => {
-          this.$confirm('是否删除此节点？', '提示', {
-            confirmButtonText: '确认',
-            cancelButtonText: '取消',
-            type: 'warning'
-          })
-            .then(() => {
-              DelFun();
-            })
-            .catch(() => {});
-        };
-
-        // 调用
-        ConfirmFun();
-        //判断是否是新增节点
-        // d.id > this.non_maxexpandId ? DelFun() : ConfirmFun();
+        return;
       }
+
+      //删除操作
+      let DelFun = async () => {
+        let _list = n.parent.data.children || n.parent.data; //节点同级数据
+        let _index = _list.map(c => c.id).indexOf(d.id);
+        _list.splice(_index, 1);
+
+        // 请求删除
+        const { code, msg } = await deleteCategory({ id: d.id });
+        if (code === 0) {
+          this.$message.success(msg);
+        }
+      };
+
+      //二次确认
+      let ConfirmFun = () => {
+        this.$confirm('是否删除此节点？', '提示', {
+          confirmButtonText: '确认',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          DelFun();
+        });
+      };
+
+      // 调用
+      ConfirmFun();
     },
 
-    NodeAdd(n, d) {
-      //新增节点
-      console.log(n, d);
+    //新增节点
+    async nodeAdd(n, d) {
       //判断层级
       if (n.level >= 3) {
         this.$message.error('最多只支持三级！');
         return false;
       }
+
       //新增数据
       d.children.push({
         id: ++this.maxexpandId,
@@ -414,13 +336,28 @@ export default {
         pid: d.id,
         children: []
       });
+
       //同时展开节点
       if (!n.expanded) {
         n.expanded = true;
       }
+
+      // 请求添加
+      let params = {
+        isEdit: false,
+        name: '新增节点',
+        pid: d.id,
+        proSort: d.proSort
+      };
+      const { code } = await insertCategory(params);
+      if (code === 0) {
+        this.getSelectCategory();
+        this.defaultExpanded = [d.id]; // 默认展开新增的节点
+      }
     },
 
-    rihgtClick(event, object, value, element) {
+    // 处理鼠标右键点击事件
+    handleMouseRightClick(event, object, value) {
       console.log(event);
       if (this.objectID !== object.id) {
         this.objectID = object.id;
@@ -430,23 +367,18 @@ export default {
       } else {
         this.menuVisible = !this.menuVisible;
       }
+
+      // 给document绑定点击事件，点击就关闭menu
       document.addEventListener('click', e => {
         this.menuVisible = false;
       });
+
       let menu = document.querySelector('#rightClickMenu');
-      console.log(menu);
-      /* 菜单定位基于鼠标点击位置 */
-      menu.style.left = event.clientX + 10 + 'px';
-      menu.style.top = event.clientY + 10 + 'px';
+
+      menu.style.left = event.layerX + 10 + 'px';
+      menu.style.top = event.layerY + 10 + 'px';
       menu.style.position = 'absolute'; // 为新创建的DIV指定绝对定位
       menu.style.width = 140 + 'px';
-      console.log(event.clientX + 10);
-      /*console.log("右键被点击的左侧:",menu.style.left);
-        console.log("右键被点击的顶部:",menu.style.top);*/
-      //        console.log("右键被点击的event:",event);
-      // console.log("右键被点击的object:", object);
-      // console.log("右键被点击的value:", value);
-      // console.log("右键被点击的element:", element);
     },
 
     dialogNewFormConfirm() {
@@ -473,13 +405,12 @@ export default {
 .tree-block {
   position: relative;
   width: 300px;
-  height: 100%;
-  background-color: #d2cfcf;
+  height: 80vh;
+  background-color: #fafafa;
 }
 
-.menu-block {
-  height: 100%;
-  position: relative;
+.top-block {
+  margin-bottom: 10px;
 }
 
 /*************************标签鼠标右击页面样式******************************/
@@ -521,5 +452,19 @@ export default {
 .el-tree-node__content__label {
   font-size: 16px;
   color: #655757;
+}
+
+/deep/ .el-tree-node {
+  white-space: nowrap;
+  outline: none;
+  padding: 3px 0;
+}
+
+/deep/ .el-tree {
+  position: relative;
+  cursor: default;
+  color: #606266;
+  background-color: #fafafa;
+  height: 100%;
 }
 </style>

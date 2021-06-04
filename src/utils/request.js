@@ -5,6 +5,7 @@ import store from '@/store';
 import { getToken } from '@/utils/auth';
 import { showFullScreenLoading, tryHideFullScreenLoading } from './loading';
 
+console.log(process.env);
 // create an axios instance
 const service = axios.create({
   baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
@@ -21,7 +22,9 @@ service.interceptors.request.use(
   config => {
     /* 特殊页面，需要对数据做处理 */
     if (config.method.toUpperCase() === 'POST' || config.method.toUpperCase() === 'PUT') {
-      config.data = Qs.stringify(config.data);
+      if (config.data) {
+        config.data = Qs.stringify(config.data);
+      }
     }
 
     // do something before request is sent

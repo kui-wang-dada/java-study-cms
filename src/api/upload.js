@@ -3,7 +3,6 @@ export const uploadAction = process.env.VUE_APP_BASE_API + '/article/article/hom
 request.headers = {
   'Content-Type': 'multipart/form-data'
 };
-console.log(request);
 export function upload(formdata) {
   return request({
     url: '/article/article/home/imgUpload',

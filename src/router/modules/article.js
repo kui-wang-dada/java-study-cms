@@ -2,7 +2,7 @@
 
 import Layout from '@/layout';
 
-const ArticleRouter = {
+const articleRouter = {
   path: '/article',
   component: Layout,
   redirect: '/article/list',
@@ -62,4 +62,4 @@ const ArticleRouter = {
     }
   ]
 };
-export default ArticleRouter;
+export default articleRouter;

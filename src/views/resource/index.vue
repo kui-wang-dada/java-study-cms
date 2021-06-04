@@ -47,7 +47,7 @@ import { statusMap } from 'assets/data-maps';
 import { formatTimer } from '@/utils';
 import pageMixin from '@/mixins/pageMixin';
 export default {
-  name: 'ArticleList',
+  name: 'ResourceList',
   mixins: [pageMixin],
   data() {
     return {
