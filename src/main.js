@@ -33,19 +33,6 @@ import axios from 'axios';
 //定义$axios（可以不写，在组件中直接使用axios）
 Vue.prototype.$axios = axios;
 
-/**
- * If you don't want to use mock-server
- * you want to use MockJs for mock api
- * you can execute: mockXHR()
- *
- * Currently MockJs will be used in the production environment,
- * please remove it before going online! ! !
- */
-import { mockXHR } from '../mock';
-if (process.env.NODE_ENV === 'production') {
-  mockXHR();
-}
-
 Vue.use(ElementUI, {
   locale,
   size: 'small'
