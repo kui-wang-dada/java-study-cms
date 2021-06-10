@@ -78,6 +78,12 @@
             <span>删除目录</span>
           </span>
         </el-menu-item>
+        <el-menu-item index="4" class="menuItem" v-if="NODE && NODE.level >= 3">
+          <span slot="title">
+            <i class="el-icon-edit-outline"></i>
+            <span>文章</span>
+          </span>
+        </el-menu-item>
       </el-menu>
     </div>
   </div>
@@ -132,8 +138,19 @@ export default {
     },
 
     // 节点点击事件
-    handleNodeClick() {
+    handleNodeClick(d, n) {
+      // 关闭menu
       this.menuVisible = false;
+
+      // 第三级目录可以点击查看文章
+      if (n.level >= 3) {
+        this.openArticle(n, d);
+      }
+    },
+
+    // 打开文章
+    openArticle(n, d) {
+      this.$emit('openArticle', { node: n, data: d });
     },
 
     // 过滤显示不了的节点
@@ -144,16 +161,21 @@ export default {
 
     // 点击menu菜单
     handleRightSelect(key) {
-      if (key == 1) {
-        this.nodeAdd(this.NODE, this.DATA);
-        this.menuVisible = false;
-      } else if (key == 2) {
-        this.nodeEdit(this.NODE, this.DATA);
-        this.menuVisible = false;
-      } else if (key == 3) {
-        this.nodeDel(this.NODE, this.DATA);
-        this.menuVisible = false;
+      switch (parseInt(key)) {
+        case 1:
+          this.nodeAdd(this.NODE, this.DATA);
+          break;
+        case 2:
+          this.nodeEdit(this.NODE, this.DATA);
+          break;
+        case 3:
+          this.nodeDel(this.NODE, this.DATA);
+          break;
+        case 4:
+          this.openArticle(this.NODE, this.DATA);
+          break;
       }
+      this.menuVisible = false;
     },
 
     //输入框失焦
@@ -277,7 +299,8 @@ export default {
 .tree-container {
   width: 300px;
   height: 100%;
-  background-color: #fcfcfc;
+  border-bottom: 1px solid #fafafa;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 0 3px 0 rgba(0, 0, 0, 0.02);
 
   .tree-block {
     position: relative;
@@ -286,7 +309,8 @@ export default {
   }
 
   .top-block {
-    margin-bottom: 10px;
+    margin: 0 0 10px 20px;
+    padding-top: 10px;
   }
 
   .el-menu-vertical {
@@ -296,6 +320,7 @@ export default {
     background-color: white;
     padding: 10px 0;
     box-shadow: 0 8px 12px #e1e2e4;
+    z-index: 2000;
   }
 
   .menuItem {
@@ -326,7 +351,7 @@ export default {
 
   .el-tree-node__content__label {
     font-size: 14px;
-    color: #8c8c8c;
+    color: #555;
   }
 
   /deep/ .el-tree-node {
@@ -335,11 +360,14 @@ export default {
     padding: 3px 0;
   }
 
+  /deep/ .el-input--mini .el-input__inner {
+    padding: 0 10px 0 8px;
+  }
+
   /deep/ .el-tree {
     position: relative;
     cursor: default;
-    color: #8c8c8c;
-    background-color: #fcfcfc;
+    color: #2c3e50;
     height: 100%;
   }
 
