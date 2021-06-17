@@ -19,11 +19,11 @@ export function insertCategory(data) {
 }
 
 // 删除分类
-export function deleteCategory(data) {
+export function deleteCategory(query) {
   return request({
     url: '/article/article/learn/deleteCategory',
-    method: 'post',
-    data
+    method: 'get',
+    params: query
   });
 }
 
